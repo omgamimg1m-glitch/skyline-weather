@@ -1,5 +1,5 @@
 # Skyline — free weather forecast
-# https://skyline-free-weather.netlify.app
+# https://omgamimg1m-glitch.github.io/skyline-weather
 
 User-agent: *
 Allow: /
@@ -11,4 +11,4 @@ Allow: /
 # files, so keep crawlers from queueing up 404s.
 Disallow: /api/
 
-Sitemap: https://skyline-free-weather.netlify.app/sitemap.xml
+Sitemap: https://omgamimg1m-glitch.github.io/skyline-weather/sitemap.xml
