@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Skyline — Free Weather Forecast</title>
+<meta name="description" content="Free, fast weather forecast with 25 explained features: rain, wind, pressure, storm risk, air quality, soil, sea state and more." />
+  <!-- Tell search engines this is the one true address for the page.
+       Without it, a renamed site and its new name look like two sites
+       with identical content, and Google picks a winner for you. -->
+  <link rel="canonical" href="https://skyline-free-weather.netlify.app/" />
+  <meta property="og:url" content="https://skyline-free-weather.netlify.app/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="robots" content="index, follow" />
+  <!-- Google Search Console proof of ownership. Do not remove: deleting this
+       tag un-verifies the property and sitemap submissions start failing. -->
+  <meta name="google-site-verification" content="A9PxdtjevKTiuFC9CgQYYp5o8xUpezisYFqEX7dGKAQ" />
+<meta name="theme-color" content="#0b1020" />
+<meta name="author" content="Divyansh Maharana" />
+<meta name="copyright" content="© 2026 Divyansh Maharana" />
+<meta property="og:site_name" content="Skyline" />
+<meta property="og:title" content="Skyline — Free Weather Forecast" />
+<meta property="og:description" content="Free, fast weather forecast with 25 explained features: rain, wind, pressure, storm risk, air quality, soil, sea state and more." />
+<meta property="og:type" content="website" />
+  <meta property="og:image" content="https://skyline-free-weather.netlify.app/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Skyline weather forecast showing current conditions and the next 24 hours" />
+  <meta name="twitter:image" content="https://skyline-free-weather.netlify.app/og-image.png" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Skyline — Free Weather Forecast",
+  "author": { "@type": "Person", "name": "Divyansh Maharana", "jobTitle": "Creator and maintainer" },
+  "creator": { "@type": "Person", "name": "Divyansh Maharana" },
+  "copyrightHolder": { "@type": "Person", "name": "Divyansh Maharana" },
+  "copyrightYear": 2026,
+  "inLanguage": ["en","hi","bn","or","es","fr","de","pt","ru","ar","zh","ja","ko","id"],
+  "isAccessibleForFree": true
+}
+</script>
+<!-- Built by Divyansh Maharana -->
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛅</text></svg>" />
+<link rel="stylesheet" href="styles.css?v=20261110-fed219e6" />
+<script src="pollen.js?v=20261110-fed219e6"></script>
+<script src="locales/en.js?v=20261110-fed219e6"></script>
+<script src="i18n.js?v=20261110-fed219e6"></script>
+<script src="lang-picker.js?v=20261110-fed219e6"></script>
+<script src="gate.js?v=20261110-fed219e6"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <a class="brand" href="guide.html">
+      <div class="mark">⛅</div>
+      <div>Skyline<small data-i18n="brand.tagline">free weather</small></div>
+    </a>
+    <div class="spacer"></div>
+    <div class="search">
+      <span class="ico">🔍</span>
+      <input id="q" type="text" placeholder="Search any city…" data-i18n-placeholder="ui.search" autocomplete="off"
+             aria-label="Search for a city" role="combobox" aria-expanded="false" aria-controls="results" />
+      <div class="results" id="results" role="listbox"></div>
+    </div>
+    <div class="lang-wrap">
+      <button class="lang-btn" id="langBtn" type="button"
+              data-i18n-attr="title:ui.language|aria-label:ui.language"
+              aria-haspopup="listbox" aria-expanded="false">EN</button>
+      <ul class="lang-menu" id="langMenu" role="listbox"
+          data-i18n-attr="aria-label:ui.language" hidden></ul>
+    </div>
+    <button class="icon-btn" id="geo" title="Use my location" aria-label="Use my location" data-i18n-attr="title:ui.myLocation|aria-label:ui.myLocation">📍</button>
+    <button class="icon-btn" id="unit" title="Switch units" aria-label="Switch temperature units">°C</button>
+    <button class="icon-btn" id="theme" title="Switch theme" aria-label="Switch theme" data-i18n-attr="title:ui.theme|aria-label:ui.theme">🌙</button>
+  </header>
+
+  <nav class="tabs" style="margin-bottom:16px;display:inline-flex" aria-label="Main">
+    <a href="guide.html"><span aria-hidden="true">📖</span> <span data-i18n="nav.guide">What it means</span></a>
+    <a href="/" aria-current="page"><span aria-hidden="true">🌤️</span> <span data-i18n="nav.forecast">Forecast</span></a>
+  </nav>
+
+  <h1 class="sr-only">Weather forecast for your location — Skyline</h1>
+
+  <div class="status" id="status">
+    <span>⚠️</span><span id="statusMsg">Could not load weather.</span>
+    <button id="retry" data-i18n="ui.retry">Retry</button>
+  </div>
+
+  <div class="notice" id="notice">
+    <span aria-hidden="true">📍</span>
+    <span id="noticeMsg"></span>
+    <button id="noticeAct" type="button" hidden></button>
+  </div>
+
+  <!-- ============ NOW ============ -->
+  <section class="hero" id="hero" aria-live="polite">
+    <div class="hero-top">
+      <div>
+        <div class="place"><span class="dot"></span><span id="placeName">Bengaluru, Karnataka, India</span></div>
+        <div class="stamp" id="stamp">Loading…</div>
+      </div>
+      <div class="stamp" id="coords"></div>
+    </div>
+    <div class="temp-row">
+      <div class="temp" id="temp">--<sup>°</sup></div>
+      <div class="emoji" id="emoji">⛅</div>
+      <div class="cond">
+        <div class="big" id="condition">Loading</div>
+        <div class="sub" id="feels">Feels like —</div>
+      </div>
+    </div>
+    <div class="chips" id="chips"></div>
+  </section>
+
+  <div class="grid">
+    <!-- ============ NEXT 24 H ============ -->
+    <section class="card" id="hoursCard" style="grid-column:1/-1">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.hours">Next 24 hours</span> <span class="hint" data-i18n="ui.scroll">scroll →</span></h2>
+        <a class="why" href="guide.html#f-precipitation" title="What does this mean?">?</a>
+      </div>
+      <div class="hours" id="hours"></div>
+    </section>
+
+    <!-- ============ CHART ============ -->
+    <section class="card" id="rain" style="grid-column:1/-1">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.rain">Temperature &amp; rain — next 48 hours</span></h2>
+        <a class="why" href="guide.html#f-precipitation" title="What does this mean?">?</a>
+      </div>
+      <div class="chartwrap">
+        <svg class="chart" id="chart" viewBox="0 0 800 190" role="img"
+             aria-label="Temperature line and precipitation bars for the next 48 hours"></svg>
+      </div>
+      <div class="legend">
+        <span><i style="background:linear-gradient(90deg,#5fa8ff,#ffb26b)"></i><span data-i18n="chart.temp">Temperature</span></span>
+        <span><i style="background:rgba(95,168,255,.75)"></i><span data-i18n="chart.precip">Precipitation (mm)</span></span>
+        <span><i style="background:rgba(167,139,250,.8)"></i><span data-i18n="chart.rainChance">Chance of rain (strip below)</span></span>
+      </div>
+      <div class="hours" id="popStrip" style="margin-top:10px"></div>
+    </section>
+
+    <!-- ============ 7 DAY ============ -->
+    <section class="card" id="daily">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.daily">7-day forecast</span></h2>
+        <a class="why" href="guide.html#f-surface_temperature" title="What does this mean?">?</a>
+      </div>
+      <div id="dailyList"></div>
+    </section>
+
+    <!-- ============ WIND (surface + upper air) ============ -->
+    <section class="card" id="wind">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.wind">Wind</span></h2>
+        <a class="why" href="guide.html#f-surface_wind" title="What does this mean?">?</a>
+      </div>
+      <div class="compass-wrap">
+        <svg class="compass" id="compass" viewBox="0 0 124 124" role="img" aria-label="Wind direction compass"></svg>
+        <div class="wind-facts" id="windFacts"></div>
+      </div>
+      <div class="spark-wrap">
+        <div class="spark-label"><span data-i18n="card.hours">Next 24 hours</span> <span id="windPeak"></span></div>
+        <svg class="spark" id="windSpark" viewBox="0 0 300 52" preserveAspectRatio="none"
+             role="img" aria-label="Wind speed and gusts through the next 24 hours"></svg>
+        <div class="seg-legend" style="margin-top:6px">
+          <span><b style="background:#63b3ff"></b><span data-i18n="m.speed">Speed</span></span>
+          <span><b style="background:#a78bfa"></b><span data-i18n="m.gusts">Gusts</span></span>
+        </div>
+      </div>
+      <div class="feat-tags">
+        <a class="feat-tag" href="guide.html#f-surface_wind" data-i18n="feat.surface_wind.name">Wind</a>
+        <a class="feat-tag" href="guide.html#f-upper_air_wind" data-i18n="feat.upper_air_wind.name">Wind high up</a>
+      </div>
+    </section>
+
+    <!-- ============ SKY (clouds, upper air, moisture) ============ -->
+    <section class="card" id="sky">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.sky">Sky &amp; upper air</span></h2>
+        <a class="why" href="guide.html#f-clouds" title="What does this mean?">?</a>
+      </div>
+      <div class="seg" id="cloudSeg"></div>
+      <div class="seg-legend">
+        <span><b style="background:#3d5a8a"></b><span data-i18n="band.low">Low</span></span>
+        <span><b style="background:#5f8dd6"></b><span data-i18n="band.mid">Middle</span></span>
+        <span><b style="background:#9cc2f5"></b><span data-i18n="band.high">High</span></span>
+      </div>
+      <div class="metrics" id="skyMetrics" style="margin-top:12px"></div>
+      <div class="feat-tags">
+        <a class="feat-tag" href="guide.html#f-clouds" data-i18n="feat.clouds.name">Cloud cover</a>
+        <a class="feat-tag" href="guide.html#f-upper_air_temperature" data-i18n="feat.upper_air_temperature.name">Temperature higher up</a>
+        <a class="feat-tag" href="guide.html#f-upper_air_water_vapour" data-i18n="feat.upper_air_water_vapour.name">Moisture high up</a>
+      </div>
+    </section>
+
+    <!-- ============ POLLEN & LIFESTYLE ============ -->
+    <section class="card" id="pollen" style="grid-column:1/-1">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.pollen">Pollen &amp; daily life</span> <span class="hint" id="pollenHint">—</span></h2>
+        <a class="why" href="guide.html#f-pollen" title="What does this mean?">?</a>
+      </div>
+      <div id="pollenBody" aria-live="polite">
+        <div class="empty-state"><span>⏳</span><div>Loading pollen outlook…</div></div>
+      </div>
+      <div class="feat-tags">
+        <a class="feat-tag" href="guide.html#f-pollen" data-i18n="feat.pollen.name">Pollen forecast</a>
+        <a class="feat-tag" href="guide.html#f-lifestyle" data-i18n="feat.lifestyle.name">Daily suggestions</a>
+      </div>
+    </section>
+
+    <!-- ============ MOISTURE ============ -->
+    <section class="card" id="moisture">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.moisture">Moisture</span></h2>
+        <a class="why" href="guide.html#f-surface_water_vapour" title="What does this mean?">?</a>
+      </div>
+      <div class="metrics" id="moistureMetrics"></div>
+      <div class="feat-tags">
+        <a class="feat-tag" href="guide.html#f-surface_water_vapour" data-i18n="feat.surface_water_vapour.name">Humidity</a>
+        <a class="feat-tag" href="guide.html#f-evaporation" data-i18n="feat.evaporation.name">Evaporation</a>
+      </div>
+    </section>
+
+    <!-- ============ STORM RISK ============ -->
+    <section class="card" id="storm">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.storm">Storm risk</span> <span class="est grey" data-i18n="guide.pill.estimated">estimated</span></h2>
+        <a class="why" href="guide.html#f-lightning" title="What does this mean?">?</a>
+      </div>
+      <div class="gauge">
+        <div class="gauge-head">
+          <div class="gauge-val" id="stormVal">—</div>
+          <div class="gauge-name" id="stormName">—</div>
+        </div>
+        <div class="gauge-track"><div class="gauge-pin" id="stormPin" style="margin-left:0"></div></div>
+        <div class="gauge-note" id="stormNote">—</div>
+        <div class="spark-wrap">
+          <div class="spark-label"><span data-i18n="card.hours">Next 24 hours</span> <span id="stormPeak"></span></div>
+          <svg class="spark" id="stormSpark" viewBox="0 0 300 46" preserveAspectRatio="none"
+               role="img" aria-label="Storm energy through the next 24 hours"></svg>
+        </div>
+      </div>
+      <div class="feat-tags">
+        <a class="feat-tag" href="guide.html#f-lightning" data-i18n="feat.lightning.name">Storm risk</a>
+      </div>
+    </section>
+
+    <!-- ============ GROUND ============ -->
+    <section class="card" id="ground">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.ground">Ground</span></h2>
+        <a class="why" href="guide.html#f-land_surface_temperature" title="What does this mean?">?</a>
+      </div>
+      <div class="metrics" id="groundMetrics"></div>
+      <div class="feat-tags">
+        <a class="feat-tag" href="guide.html#f-land_surface_temperature" data-i18n="feat.land_surface_temperature.name">Ground temperature</a>
+        <a class="feat-tag" href="guide.html#f-soil_moisture" data-i18n="feat.soil_moisture.name">How wet the soil is</a>
+        <a class="feat-tag" href="guide.html#f-radiation_budget" data-i18n="feat.radiation_budget.name">Sun energy at the ground</a>
+      </div>
+    </section>
+
+    <!-- ============ AIR QUALITY ============ -->
+    <section class="card" id="air">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.air">Air quality</span> <span class="hint" data-i18n="ui.euroAqi">European AQI</span></h2>
+        <a class="why" href="guide.html#f-aerosols" title="What does this mean?">?</a>
+      </div>
+      <div class="aqi-row">
+        <div class="aqi-num" id="aqiNum">—</div>
+        <div>
+          <div class="aqi-label" id="aqiLabel">Loading…</div>
+          <div class="aqi-note" id="aqiNote">—</div>
+        </div>
+      </div>
+      <div class="aqi-scale" id="aqiScale"></div>
+      <div class="aqi-bar"></div>
+      <div class="aqi-pin" id="aqiPin" style="margin-left:0"></div>
+      <div class="metrics" id="pollutantSummary" style="margin-top:10px"></div>
+      <div class="pollutants" id="pollutants"></div>
+      <div class="feat-tags">
+        <a class="feat-tag" href="guide.html#f-aerosols" data-i18n="feat.aerosols.name">Haze and dust</a>
+        <a class="feat-tag" href="guide.html#f-ozone" data-i18n="feat.ozone.name">Ground-level ozone</a>
+        <a class="feat-tag" href="guide.html#f-precursors" data-i18n="feat.precursors.name">Pollution gases</a>
+      </div>
+    </section>
+
+    <!-- ============ SUN & UV ============ -->
+    <section class="card" id="sun">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.sun">Sun &amp; UV</span> <span class="hint" id="dayLen">—</span></h2>
+        <a class="why" href="guide.html#f-radiation_budget" title="What does this mean?">?</a>
+      </div>
+      <svg class="sunarc" id="sunarc" viewBox="0 0 300 118" role="img" aria-label="Sunrise to sunset arc"></svg>
+      <div class="sun-times">
+        <div><span data-i18n="m.sunrise">Sunrise</span><b id="sunrise">—</b></div>
+        <div style="text-align:right"><span data-i18n="m.sunset">Sunset</span><b id="sunset">—</b></div>
+      </div>
+      <div class="uv">
+        <div class="uv-head"><span data-i18n="m.uv">UV index (max)</span><b id="uvNum">—</b></div>
+        <div class="uv-track"><div class="uv-pin" id="uvPin"></div></div>
+        <div class="uv-note" id="uvNote">—</div>
+      </div>
+      <div class="feat-tags">
+        <a class="feat-tag" href="guide.html#f-radiation_budget" data-i18n="feat.radiation_budget.name">Sun energy at the ground</a>
+      </div>
+    </section>
+
+    <!-- ============ SEA (only near coast) ============ -->
+    <section class="card" id="sea" hidden>
+      <div class="card-title-row">
+        <h2><span data-i18n="card.sea">Sea</span> <span class="hint" id="seaDist"></span></h2>
+        <a class="why" href="guide.html#f-sea_state" title="What does this mean?">?</a>
+      </div>
+      <div class="metrics" id="seaMetrics"></div>
+      <div class="feat-tags">
+        <a class="feat-tag" href="guide.html#f-sea_state" data-i18n="feat.sea_state.name">Waves</a>
+        <a class="feat-tag" href="guide.html#f-surface_currents" data-i18n="feat.surface_currents.name">Sea currents</a>
+        <a class="feat-tag" href="guide.html#f-sea_surface_temperature" data-i18n="feat.sea_surface_temperature.name">Sea temperature</a>
+        <a class="feat-tag" href="guide.html#f-sea_level" data-i18n="feat.sea_level.name">Tide height</a>
+      </div>
+    </section>
+
+    <!-- ============ ENVIRONMENT (global / climate) ============ -->
+    <section class="card" id="environment">
+      <div class="card-title-row">
+        <h2><span data-i18n="card.environment">Environment</span> <span class="est grey" data-i18n="ui.notLocal">not local weather</span></h2>
+        <a class="why" href="guide.html#f-greenhouse_gases" title="What does this mean?">?</a>
+      </div>
+      <div id="landMix"></div>
+      <div class="metrics" id="envMetrics"></div>
+      <div class="feat-tags">
+        <a class="feat-tag" href="guide.html#f-greenhouse_gases" data-i18n="feat.greenhouse_gases.name">Heat-trapping gases</a>
+        <a class="feat-tag" href="guide.html#f-fire" data-i18n="feat.fire.name">Fire risk</a>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div>
+      <span data-i18n="guide.foot.data">Data:</span> <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (CC-BY 4.0) ·
+      Forecast models from national weather services ·
+      <a href="guide.html">Feature guide</a>
+    </div>
+    <div class="credit">
+      <span data-i18n="credit.builtBy">Built by</span>
+      <b class="credit-name">Divyansh Maharana</b><span class="credit-role" data-i18n="credit.role">built and maintains this site</span>
+    </div>
+    <div class="disclaimer">
+      This is an independent hobby project, not an official meteorological service.
+      For warnings and life-safety decisions, always follow your national weather agency
+      (e.g. <a href="https://mausam.imd.gov.in/" target="_blank" rel="noopener">IMD</a>,
+      <a href="https://www.noaa.gov/" target="_blank" rel="noopener">NOAA</a>).
+    </div>
+  </footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ------------------------------------------------------------------ state */
+  const DEFAULT = { name: "Bengaluru, Karnataka, India", lat: 12.9716, lon: 77.5946 };
+  /* ------------------------------------------------------------------ pollen
+     Bands, grouping and labels live in pollen.js so the thresholds can be
+     tested without a browser. These aliases keep the renderer readable. */
+  const POLLEN_TYPES = Pollen.TYPES;
+  const POLLEN_GROUP_LABEL = Pollen.GROUP_LABEL;
+  /* Translate the level names once; Pollen.META holds the canonical English. */
+  const BAND_META = {
+    "low":       { rank: 0, icon: "🟢", get text() { return L("Low"); } },
+    "moderate":  { rank: 1, icon: "🟡", get text() { return L("Moderate"); } },
+    "high":      { rank: 2, icon: "🟠", get text() { return L("High"); } },
+    "very high": { rank: 3, icon: "🔴", get text() { return L("Very high"); } },
+  };
+  const POLLEN_BANDS = Pollen.BANDS;
+  const pollenBand = Pollen.band;
+  const polClass = Pollen.cls;
+
+  /* ------------------------------------------------------------------ storage
+     In a sandboxed iframe (the preview, and any embed without allow-same-origin)
+     even READING localStorage throws a SecurityError. Unguarded, that breaks
+     unit switching, theme switching and saving your city — the whole page dies
+     on the first click. Storage is a convenience, never a requirement, so every
+     access goes through these three helpers. */
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* memory only */ } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } },
+  };
+
+  const S = {
+    place: { ...DEFAULT },
+    unit: store.get("skyline.unit") || "c",
+    theme: store.get("skyline.theme") ||
+           (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"),
+    forecast: null, air: null, marine: null, land: null, pollen: null, busy: false, fetchedAt: 0,
+  };
+
+  const $ = (id) => document.getElementById(id);
+  let fetchAt = Date.now();   // when the current data was pulled
+  /* Date/time formatters follow the chosen language, so weekday and month
+     names come from Intl rather than from English literals. Keys are re-created
+     when the language changes (see onApply below). */
+  /* Chromium ships "small-icu" data: some locales have no date vocabulary, and
+     Intl silently falls back to en-US rather than erroring. Odia is one — it
+     would have shown "Wednesday, Nov 11" to an Odia reader. This table carries
+     the calendars Intl cannot produce, so those pages stay in their own script.
+     Checked in buildFormatters by comparing the resolved locale. */
+  const INTL_FALLBACK = {
+    or: {
+      days:   ["ରବିବାର","ସୋମବାର","ମଙ୍ଗଳବାର","ବୁଧବାର","ଗୁରୁବାର","ଶୁକ୍ରବାର","ଶନିବାର"],
+      months: ["ଜାନୁଆରୀ","ଫେବୃଆରୀ","ମାର୍ଚ୍ଚ","ଅପ୍ରେଲ","ମେ","ଜୁନ","ଜୁଲାଇ","ଅଗଷ୍ଟ",
+               "ସେପ୍ଟେମ୍ବର","ଅକ୍ଟୋବର","ନଭେମ୍ବର","ଡିସେମ୍ବର"],
+      am: "ପୂର୍ବାହ୍ନ", pm: "ଅପରାହ୍ନ", ampm: true, pad24: false
+    }
+  };
+  const odDigits = (n) => String(n).replace(/[0-9]/g, (d) => "୦୧୨୩୪୫୬୭୮୯"[+d]);
+
+  /* A formatter object with the same .format() surface as Intl's, so callers
+     never branch on which one they got. */
+  function fallbackFormatter(kind, fb) {
+    return { format(date) {
+      const h = date.getHours(), mi = date.getMinutes();
+      if (kind === "day")   return fb.days[date.getDay()];
+      if (kind === "date")  return odDigits(date.getDate()) + " " + fb.months[date.getMonth()];
+      const h12 = h % 12 === 0 ? 12 : h % 12;
+      if (kind === "hour")  return odDigits(h12) + " " + (h < 12 ? fb.am : fb.pm);
+      return odDigits(h12) + ":" + odDigits(String(mi).padStart(2, "0")) + " " + (h < 12 ? fb.am : fb.pm);
+    }};
+  }
+
+  let hourFmt, dayFmt, dateFmt, timeFmt;
+  function buildFormatters() {
+    const loc = (window.i18n && window.i18n.lang) || "en";
+    const mk = (opts, kind) => {
+      const f = new Intl.DateTimeFormat(loc, opts);
+      const fb = INTL_FALLBACK[loc];
+      /* Trust Intl only if it actually honoured the requested language. */
+      if (fb && !f.resolvedOptions().locale.toLowerCase().startsWith(loc)) {
+        return fallbackFormatter(kind, fb);
+      }
+      return f;
+    };
+    hourFmt = mk({ hour: "numeric" }, "hour");
+    dayFmt  = mk({ weekday: "long" }, "day");
+    dateFmt = mk({ day: "numeric", month: "short" }, "date");
+    timeFmt = mk({ hour: "2-digit", minute: "2-digit" }, "time");
+  }
+  buildFormatters();
+
+  /* ------------------------------------------------------- WMO code mapping */
+  const WMO = {
+    0:["Clear sky","☀️","🌙"], 1:["Mainly clear","🌤️","🌙"], 2:["Partly cloudy","⛅","☁️"],
+    3:["Overcast","☁️","☁️"], 45:["Fog","🌫️","🌫️"], 48:["Rime fog","🌫️","🌫️"],
+    51:["Light drizzle","🌦️","🌧️"], 53:["Drizzle","🌦️","🌧️"], 55:["Heavy drizzle","🌧️","🌧️"],
+    56:["Freezing drizzle","🌧️","🌧️"], 57:["Freezing drizzle","🌧️","🌧️"],
+    61:["Light rain","🌦️","🌧️"], 63:["Rain","🌧️","🌧️"], 65:["Heavy rain","🌧️","🌧️"],
+    66:["Freezing rain","🌨️","🌨️"], 67:["Freezing rain","🌨️","🌨️"],
+    71:["Light snow","🌨️","🌨️"], 73:["Snow","❄️","❄️"], 75:["Heavy snow","❄️","❄️"],
+    77:["Snow grains","🌨️","🌨️"], 80:["Light showers","🌦️","🌧️"], 81:["Showers","🌧️","🌧️"],
+    82:["Violent showers","⛈️","⛈️"], 85:["Snow showers","🌨️","🌨️"], 86:["Snow showers","🌨️","🌨️"],
+    95:["Thunderstorm","⛈️","⛈️"], 96:["Storm w/ hail","⛈️","⛈️"], 99:["Storm w/ hail","⛈️","⛈️"],
+  };
+  /* English condition names -> locale keys, so "Overcast" and friends translate.
+     Kept as a separate map so the WMO table above stays readable. */
+  const WMO_KEY = {"0": "wx.clear", "1": "wx.mainlyClear", "2": "wx.partlyCloudy", "3": "wx.overcast", "45": "wx.fog", "48": "wx.rimeFog", "51": "wx.lightDrizzle", "53": "wx.drizzle", "55": "wx.heavyDrizzle", "56": "wx.freezingDrizzle", "57": "wx.freezingDrizzle", "61": "wx.lightRain", "63": "wx.rain", "65": "wx.heavyRain", "66": "wx.freezingRain", "67": "wx.freezingRain", "71": "wx.lightSnow", "73": "wx.snow", "75": "wx.heavySnow", "77": "wx.snowGrains", "80": "wx.lightShowers", "81": "wx.showers", "82": "wx.violentShowers", "85": "wx.snowShowers", "86": "wx.snowShowers", "95": "wx.thunderstorm", "96": "wx.stormHail", "99": "wx.stormHail"};
+  const wmo = (code, day = true) => {
+    const r = WMO[code] || ["Unknown", "🌡️", "🌡️"];
+    const key = WMO_KEY[code];
+    const label = key && window.t ? window.t(key, r[0])
+                : (!key ? (window.t ? window.t("ui.unknown", r[0]) : r[0]) : r[0]);
+    return { label, icon: day ? r[1] : r[2] };
+  };
+
+  const DIRS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+  const dirName = (deg) => (deg == null || isNaN(deg)) ? "—" : DIRS[Math.round(((deg % 360) / 22.5)) % 16];
+
+  /* ------------------------------------------------------------- conversions */
+  const toF = (c) => c * 9 / 5 + 32;
+  const tempStr = (c, dp = 0) => (c == null || Number.isNaN(c)) ? "—"
+    : (S.unit === "c" ? c.toFixed(dp) : toF(c).toFixed(dp)) + "°";
+  const tempNum = (c) => (c == null || Number.isNaN(c)) ? null : Math.round(S.unit === "c" ? c : toF(c));
+  const unitSym = () => (S.unit === "c" ? "°C" : "°F");
+  // absolute temperature with an explicit unit (never a bare °)
+  const tempAbs = (c, dp = 0) => (c == null || Number.isNaN(c)) ? "—"
+    : `${(S.unit === "c" ? c : toF(c)).toFixed(dp)}${unitSym()}`;
+  const windStr = (kmh, dp = 0) => kmh == null ? "—"
+    : (S.unit === "c" ? kmh.toFixed(dp) : (kmh * 0.621371).toFixed(dp)) + (S.unit === "c" ? " km/h" : " mph");
+  const num = (v, dp = 0, unit = "") => (v == null || Number.isNaN(v)) ? "—"
+    : `${Number(v).toFixed(dp)}${unit ? " " + unit : ""}`;
+  const mm = (v) => v == null ? "—" : (v < 0.05 ? "0" : v.toFixed(1)) + " mm";
+
+  /* ---------------------------------------------------------------- fetching */
+  const qs = (o) => new URLSearchParams(o).toString();
+  const MIRROR = {
+    "/api/weather": "https://api.open-meteo.com/v1/forecast",
+    "/api/search": "https://geocoding-api.open-meteo.com/v1/search",
+    "/api/air": "https://air-quality-api.open-meteo.com/v1/air-quality",
+    "/api/marine": "https://marine-api.open-meteo.com/v1/marine",
+    // static hosting can't do the OSM proxy, so this one is server-only
+    "/api/landcover": "https://nominatim.openstreetmap.org/reverse",
+  };
+
+  async function once(url, timeoutMs) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const r = await fetch(url, { signal: ctrl.signal });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return await r.json();
+    } finally { clearTimeout(t); }
+  }
+
+  /* Show or hide every data card at once. Used when the forecast cannot be
+     fetched: an empty card with a "Loading…" placeholder is technically not a
+     lie, but it implies a forecast is coming when none is. */
+  function setCardsVisible(show) {
+    document.querySelectorAll("section.card").forEach((c) => { c.hidden = !show; });
+  }
+
+  async function getJSON(url, timeoutMs = 15000) {
+    try {
+      return await once(url, timeoutMs);
+    } catch (err) {
+      const path = url.split("?")[0];
+      if (path === "/api/landcover") {
+        // Overpass can't be queried straight from the browser here, so on static
+        // hosting we return an explicit "not checked" marker rather than a guess.
+        return { available: false, static_host: true };
+      }
+      if (MIRROR[path]) return await once(MIRROR[path] + "?" + url.split("?").slice(1).join("?"), timeoutMs);
+      throw err;
+    }
+  }
+
+  const CURRENT_VARS = [
+    "temperature_2m","relative_humidity_2m","dew_point_2m","apparent_temperature",
+    "precipitation","rain","showers","snowfall","snow_depth","weather_code",
+    "cloud_cover","cloud_cover_low","cloud_cover_mid","cloud_cover_high","visibility",
+    "pressure_msl","surface_pressure","wind_speed_10m","wind_direction_10m","wind_gusts_10m",
+    "is_day","shortwave_radiation","direct_radiation","diffuse_radiation","terrestrial_radiation",
+    "direct_normal_irradiance","et0_fao_evapotranspiration","vapour_pressure_deficit",
+    "cape","lifted_index","freezing_level_height","soil_temperature_0cm","soil_moisture_0_to_1cm",
+    "temperature_850hPa","relative_humidity_700hPa","wind_speed_250hPa","wind_direction_250hPa",
+    "sunshine_duration","precipitation_probability",
+  ].join(",");
+
+  async function load() {
+    if (S.busy) return;
+    S.busy = true;
+    try {
+      const { lat, lon } = S.place;
+      fetchAt = Date.now();
+      const results = await Promise.allSettled([
+        getJSON("/api/weather?" + qs({
+          latitude: lat, longitude: lon, timezone: "auto", forecast_days: 7,
+          current: CURRENT_VARS,
+          hourly: "temperature_2m,precipitation_probability,precipitation,weather_code,is_day,cape,wind_speed_10m,wind_gusts_10m",
+          daily: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,uv_index_max,daylight_duration,sunshine_duration",
+        })),
+        getJSON("/api/air?" + qs({
+          latitude: lat, longitude: lon, timezone: "auto", forecast_days: 1,
+          current: "european_aqi,us_aqi,pm2_5,pm10,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,aerosol_optical_depth,dust,ammonia,methane,carbon_dioxide,formaldehyde",
+        })),
+        getJSON("/api/landcover?" + qs({ latitude: lat, longitude: lon }), 12000),
+        getJSON("/api/marine?" + qs({
+          latitude: lat, longitude: lon, timezone: "auto", forecast_days: 2,
+          current: "wave_height,wave_period,wave_direction,sea_surface_temperature,ocean_current_velocity,ocean_current_direction,sea_level_height_msl",
+        })),
+        /* Pollen: a few days of hourly values from the same air-quality model.
+           Longer horizons come back null anyway, so asking for more would only
+           enlarge the payload without adding information. */
+        getJSON("/api/air?" + qs({
+          latitude: lat, longitude: lon, timezone: "auto", forecast_days: 3,
+          hourly: Object.keys(POLLEN_TYPES).join(","),
+        })),
+      ]);
+
+      const [fc, air, land, marine, pollen] = results;  // order matches Promise.allSettled above
+      if (fc.status === "fulfilled") {
+        S.forecast = fc.value;
+        setCardsVisible(true);
+        renderForecast();
+        hideError();
+      } else {
+        showError("Could not reach the weather service. Check your connection and retry.");
+        /* With no forecast there is nothing truthful for the data cards to show.
+           Leaving them up means a screen full of "Loading…" placeholders that
+           will never resolve — which reads as a page still working when it is
+           not. Hide them and let the error + Retry be the whole message. */
+        setCardsVisible(false);
+      }
+      S.air = air.status === "fulfilled" ? air.value : null;
+      renderAir();
+      S.marine = marine.status === "fulfilled" ? marine.value : null;
+      S.land = land.status === "fulfilled" ? land.value : null;
+      S.pollen = pollen.status === "fulfilled" ? pollen.value : null;
+      renderSea();
+      renderPollen();
+      if (S.forecast) {
+        renderStorm();
+        renderEnvironment();
+      }
+    } finally { S.busy = false; }
+  }
+
+
+  /* Map an English UI label to its locale key. "Ground temperature" ->
+     "m.groundTemp". If no key exists the English label is returned unchanged,
+     so an untranslated string degrades to English rather than to a key name. */
+  const LABEL_KEY = {
+    "Humidity": "m.humidity", "Dew point": "m.dewpoint", "Evaporation": "m.evaporation",
+    "Vapour deficit": "m.vpd", "Ground temperature": "m.ground", "How wet the soil is": "m.soil",
+    "Sun energy at the ground": "m.sunEnergy", "Snow on the ground": "m.snow",
+    "Visibility": "m.visibility", "Air pressure": "m.pressure", "Total cloud": "m.totalCloud",
+    "Temperature higher up": "m.tempUpper", "Moisture high up": "m.moistureUpper",
+    "Freezing level": "m.freezing", "Sunshine forecast": "m.sunshine",
+    "Speed": "m.speed", "Gusts": "m.gusts", "Sunrise": "m.sunrise", "Sunset": "m.sunset",
+    "UV index (max)": "m.uv", "Wave height": "m.waveHeight", "Sea temperature": "m.seaTemp",
+    "Rain now": "m.rainNow", "Wind": "m.wind", "Cloud": "m.cloud",
+    "Low": "band.low", "Moderate": "band.moderate", "High": "band.high",
+    "Very high": "band.veryHigh",
+    "Trees": "pol.trees", "Grass": "pol.grass", "Weeds": "pol.weeds",
+    /* Air-quality pollutant rows and the AQI summary heading. */
+    "PM2.5 (haze)": "aqi.pm25", "PM10 (dust)": "aqi.pm10", "Ozone": "aqi.ozone",
+    "NO₂ (traffic)": "aqi.no2", "Formaldehyde": "aqi.formaldehyde",
+    "Haze thickness": "aqi.haze", "Dust": "aqi.dust",
+    "Smog-forming gases": "aqi.smog",
+    /* Wind facts and aloft readings. */
+    "From": "m.from", "High up (10 km)": "m.aloft",
+    /* Section headings rendered through metric()/L() */
+    "What's on the ground": "feat.land_cover.name",
+    "Heat-trapping gases": "feat.greenhouse_gases.name",
+    "Fire risk": "feat.fire.name",
+    "Pollen": "feat.pollen.name",
+    "Temp − dew point": "m.tempDewSpread",
+    "Very low": "band.veryLow",
+  };
+  /* OpenStreetMap land-use classes arrive with stable English labels from
+     server.py, so they can be translated by lookup rather than by guessing at
+     the local naming. */
+  const LAND_KEY = {
+    "Built-up area": "land.built", "Shops & offices": "land.shops",
+    "Industrial": "land.industrial", "Park": "land.park",
+    "Construction": "land.construction", "Water": "land.water",
+    "Grass & lawn": "land.grass", "Forest": "land.forest",
+    "Farmland": "land.farmland",
+  };
+  const L = (label) => {
+    const key = LABEL_KEY[label];
+    return key && window.t ? window.t(key, label) : label;
+  };
+
+  /* A metric row. Returns "" when we genuinely have no value, so the card
+     closes up instead of showing an empty "—" slot to the user. */
+  function metric(k, v, sub, opts = {}) {
+    const missing = v == null || v === "—" || v === "" || Number.isNaN(v);
+    if (missing && !opts.keep) return "";
+    const cls = missing ? "metric missing" : "metric";
+    const val = missing ? (opts.keep || "—") : v;
+    return `<div class="${cls}"><div class="k"><b>${L(k)}</b></div>` +
+           `<div class="v">${val}</div>` +
+           (sub ? `<div class="sub">${sub}</div>` : "") + `</div>`;
+  }
+
+  /* Render a list of metric rows, or an explicit empty-state if none survive. */
+  function metricList(el, rows, emptyText) {
+    const html = rows.filter(Boolean).join("");
+    el.innerHTML = html || `<div class="empty-state"><span>∅</span><div>${emptyText}</div></div>`;
+  }
+
+
+  /* ------------------------------------------------------------- pollen card
+     Three outcomes, all explicit:
+       values      -> per-group levels, per-type detail, 3-day strip, suggestions
+       all null    -> "not modelled here" (a regional coverage gap, not a zero)
+       fetch fails -> "could not load", with the rest of the page untouched
+
+     The distinction matters: null is NOT low pollen. Rendering a 0 would tell
+     someone with hay fever that today is clear when the truth is that nobody
+     knows for their area. */
+  const POLLEN_LEGEND = () => [
+    ["low", "Low"], ["moderate", "Moderate"], ["high", "High"], ["very high", "Very high"],
+  ].map(([k, en]) => [k, L(en)]);
+
+  function pollenSeries(d) {
+    /* Hourly arrays -> per-type peak for the current day, plus the 3-day peak.
+       We report peaks because a daily average hides the hour that actually
+       matters: grass pollen commonly spikes mid-morning and again early evening. */
+    const h = d && d.hourly;
+    if (!h || !h.time) return null;
+    const now = new Date();
+    const todayEnd = new Date(now); todayEnd.setHours(23, 59, 59, 999);
+
+    const types = {};
+    let anyToday = false, anyWindow = false, dataStart = null, dataEnd = null;
+
+    for (const key of Object.keys(POLLEN_TYPES)) {
+      const arr = h[key];
+      if (!Array.isArray(arr)) continue;
+      let today = null, window = null, peakHour = null;
+      for (let i = 0; i < arr.length; i++) {
+        const v = arr[i];
+        if (v == null) continue;
+        const at = new Date(h.time[i]);
+        if (!dataStart || at < dataStart) dataStart = at;
+        if (!dataEnd || at > dataEnd) dataEnd = at;
+        anyWindow = true;
+        if (at <= todayEnd) {
+          anyToday = true;
+          if (today == null || v > today) { today = v; peakHour = at; }
+          if (window == null || v > window) window = v;
+        }
+      }
+      types[key] = {
+        today, window, peakHour,
+        todayBand: today == null ? null : pollenBand(POLLEN_TYPES[key].group, today),
+        windowBand: window == null ? null : pollenBand(POLLEN_TYPES[key].group, window),
+      };
+    }
+    if (!anyWindow) return null;
+    return { types, anyToday, dataStart, dataEnd };
+  }
+
+  function renderPollen() {
+    const body = $("pollenBody");
+    if (!body) return;
+    const hint = $("pollenHint");
+
+    /* --- state: request failed ------------------------------------------- */
+    if (!S.pollen) {
+      hint.textContent = window.t("state.unavailable", "unavailable");
+      body.innerHTML = `<div class="empty-state"><span>⚠️</span>
+        <div><b>Could not load the pollen outlook.</b><br>
+        The rest of the forecast is unaffected. Use Retry at the top to try again.</div></div>`;
+      return;
+    }
+    if (S.pollen.available === false) {
+      hint.textContent = window.t("state.unavailable", "unavailable");
+      body.innerHTML = `<div class="empty-state"><span>∅</span>
+        <div>Pollen data is not available for this location.</div></div>`;
+      return;
+    }
+
+    const series = pollenSeries(S.pollen);
+
+    /* --- state: no values anywhere --------------------------------------
+       Coverage is Europe-only, so most of the world lands here. The card still
+       earns its place: the weather half of the advice works everywhere, so it
+       is shown under a heading that makes clear it is weather-only. Leaving the
+       card empty for two thirds of the planet would be a worse answer. */
+    if (!series || !series.anyToday) {
+      hint.textContent = window.t("state.notModelled", "no local pollen data");
+      const tips = lifestyleSuggestions(null, [], S.forecast);
+      body.innerHTML = `
+        <div class="pol-gap">
+          <span aria-hidden="true">🌍</span>
+          <div>
+            <b>${window.t("pol.noData","No pollen forecast covers this location.")}</b>
+            The pollen model is regional — it currently covers Europe and returns nothing for
+            most of Asia, Africa, the Americas and Oceania. That is a gap in coverage, not a
+            reading of zero, so no level is shown rather than an invented one.
+          </div>
+        </div>
+
+        <div class="pol-section-head">${window.t("pol.weatherOnly","What today looks like for being outside")}
+          <span>${window.t("pol.weatherOnlyTag","weather only")}</span></div>
+        <div class="pol-advice">${tips}</div>
+
+        <div class="pol-foot">
+          These suggestions come from the weather forecast, not from pollen.
+          For a pollen count here, your national meteorological or pollen service is the
+          right place to look; this site will show one as soon as it covers the area.
+        </div>`;
+      return;
+    }
+
+    /* --- state: values -------------------------------------------------- */
+    /* Group level = the worst of its types, because one high type is what a
+       person actually notices. Averaging would hide a birch spike behind two
+       quiet species. */
+    const groupRows = Object.keys(POLLEN_GROUP_LABEL).map((g) => {
+      const members = Object.keys(POLLEN_TYPES).filter((k) => POLLEN_TYPES[k].group === g);
+      let worst = null, worstType = null;
+      for (const k of members) {
+        const t = series.types[k];
+        if (!t || t.today == null) continue;
+        if (worst == null || t.today > worst) { worst = t.today; worstType = k; }
+      }
+      if (worst == null) return null;
+      const band = pollenBand(g, worst);
+      return { group: g, label: POLLEN_GROUP_LABEL[g], value: worst, band, type: worstType };
+    }).filter(Boolean);
+
+    const overall = groupRows.reduce(
+      (a, r) => (BAND_META[r.band].rank > BAND_META[a].rank ? r.band : a), "low");
+
+    const dayName = (d) => ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
+
+    const groupChips = groupRows.map((r) =>
+      `<div class="metric">
+         <div class="k"><b>${r.label}</b></div>
+         <div class="v pol-${r.band.replace(" ", "-")}">${BAND_META[r.band].icon} ${BAND_META[r.band].text}</div>
+         <div class="sub">peak ${Math.round(r.value)} ${window.t("pol.grains","grains/m³")} · ${POLLEN_TYPES[r.type].label}</div>
+       </div>`).join("");
+
+    const typeRows = Object.keys(POLLEN_TYPES).map((k) => {
+      const t = series.types[k];
+      if (!t || t.today == null) return "";
+      return `<div class="pol-row">
+        <span class="pol-name">${POLLEN_TYPES[k].label}</span>
+        <span class="pol-val">${Math.round(t.today)}<small> ${window.t("pol.grains","grains/m³")}</small></span>
+        <span class="pol-band pol-${t.todayBand.replace(" ", "-")}">${BAND_META[t.todayBand].icon} ${BAND_META[t.todayBand].text}</span>
+      </div>`;
+    }).filter(Boolean).join("");
+
+    const suggestions = lifestyleSuggestions(overall, groupRows, S.forecast);
+
+    const span = series.dataStart && series.dataEnd
+      ? `${dayName(series.dataStart)} – ${dayName(series.dataEnd)}`
+      : "3 days";
+
+    hint.textContent = `${BAND_META[overall].text}`;
+    body.innerHTML = `
+      <div class="pol-top">
+        <div class="pol-big pol-${overall.replace(" ", "-")}">${BAND_META[overall].icon}<span>${BAND_META[overall].text}</span></div>
+        <div class="pol-summary">
+          <b>${window.t("pol.overall","Overall today")}</b>
+          Each group is judged on its own scale, because birch and grass are counted
+          differently. Peaks are for the day ahead — pollen usually spikes mid-morning
+          and again early evening.
+        </div>
+      </div>
+
+      <div class="metrics pol-groups">${groupChips}</div>
+
+      <div class="pol-legend" aria-label="Pollen level scale">
+        ${POLLEN_LEGEND().map(([k, name]) => `<span><i class="pol-${k.replace(" ", "-")}"></i>${name}</span>`).join("")}
+      </div>
+
+      <div class="pol-section-head">${window.t("pol.byType","By type")} <span>${window.t("pol.peakToday","peak today")}</span></div>
+      <div class="pol-rows">${typeRows}</div>
+
+      <div class="pol-section-head">What this might mean for your day
+        <span>general guidance, not medical advice</span></div>
+      <div class="pol-advice">${suggestions}</div>
+
+      <div class="pol-foot">
+        Pollen data is modelled, not measured at your street: it is a regional estimate for
+        roughly a 40 km grid cell, forecast about ${span.toLowerCase()}. It is not a medical
+        source. If pollen affects your health, follow your own clinician's advice rather than
+        this page.
+      </div>`;
+  }
+
+  /* Practical, general, non-medical. Every line is phrased as a possibility
+     ("may", "might", "could"), never a promise or an instruction — this is a
+     weather page, not a diagnosis. */
+  /* overall may be null when there is no pollen coverage for the location — the
+     weather side of the advice is still useful there, and withholding it would
+     leave half the world with an empty card for no good reason. */
+  function lifestyleSuggestions(overall, groupRows, forecast) {
+    const out = [];
+    const TIP_KEY = {
+      "Good conditions for being outside": "tip.goodOutdoor",
+      "Outdoors is probably fine": "tip.probablyFine",
+      "Worth planning outdoor time around": "tip.planAround",
+      "Consider limiting long outdoor exposure": "tip.limitExposure",
+      "When it is usually worst": "tip.worstTime",
+      "Indoors": "tip.indoors", "After being outside": "tip.afterOutside",
+      "Cold out": "tip.cold", "Strong sun": "tip.strongSun", "Sun is modest": "tip.modestSun",
+      "Keep an umbrella nearby": "tip.umbrella", "Rain is unlikely": "tip.noRain",
+      "Settled weather": "tip.settled", "Breezy conditions": "tip.breezy",
+      "Warm and still": "tip.warmStill", "Weather is not amplifying pollen": "tip.settled",
+      "Rain may ease things": "tip.rainEases",
+    };
+    const add = (icon, title, body) => out.push({
+      icon,
+      title: window.t ? window.t(TIP_KEY[title], title) : title,
+      body,
+    });
+    const hasPollen = overall != null;
+    const rank = hasPollen ? BAND_META[overall].rank : -1;
+
+    /* --- pollen-driven (skipped when the model has no coverage) --- */
+    if (!hasPollen) {
+      /* nothing to say about pollen — the weather tip carries the card */
+    } else if (rank === 0) {
+      add("🚶", "Good conditions for being outside",
+          "Pollen looks low today. Outdoor plans are unlikely to be affected by it.");
+    } else if (rank === 1) {
+      add("🚶", "Outdoors is probably fine",
+          "Pollen is moderate. Most people will not notice it; if you are usually bothered, " +
+          "you may want to keep an eye on how you feel during longer spells outside.");
+    } else if (rank === 2) {
+      add("🌳", "Worth planning outdoor time around",
+          "Pollen is high for at least one group today. Consider putting longer outdoor " +
+          "activities earlier or later, and changing clothes after being outside.");
+    } else if (rank === 3) {
+      add("🔴", "Consider limiting long outdoor exposure",
+          "Pollen is very high for at least one group today. Prolonged outdoor activity may " +
+          "be uncomfortable. Indoor alternatives, or shorter trips outdoors, could suit you better today.");
+    }
+
+    /* --- which group is driving it --- */
+    const worst = groupRows.slice().sort((a, b) => b.value - a.value)[0];
+    if (hasPollen && worst && BAND_META[worst.band].rank >= 1) {
+      const why = {
+        trees: "Trees are the main source — alder, birch and olive peak in the early part of the year.",
+        grass: "Grass is the main source, and grass pollen usually peaks in the morning and early evening.",
+        weeds: "Weeds are the main source — mugwort and ragweed are the usual culprits later in the year.",
+      }[worst.group];
+      add("🌾", `${worst.label} are driving today's level`, why);
+    }
+
+    /* --- timing, only meaningful where counts are modelled --- */
+    if (hasPollen) add("🕒", "When it is usually worst",
+        "Pollen counts most often rise mid-morning as the air warms and mixes, then ease " +
+        "overnight. If you are sensitive, early morning and late evening often feel easier.");
+
+    /* --- weather interplay, using data already on the page --- */
+    const cur = forecast && forecast.current;
+    if (cur) {
+      const code = cur.weather_code;
+      const wet = [51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99].includes(code);
+      const wind = cur.wind_speed_10m;
+      const temp = cur.temperature_2m;
+
+      if (wet) {
+        add("🌧️", "Rain may ease things", hasPollen
+            ? "Precipitation is happening or forecast, which tends to wash pollen out of the air. " +
+              "Counts often fall during rain, then climb again once it clears and dries."
+            : "Precipitation is happening or forecast. A wet spell usually makes for a fresher " +
+              "spell outdoors, though it may be worth taking a jacket.");
+      } else if (typeof wind === "number" && wind >= 20) {
+        add("🌬️", "Breezy conditions", hasPollen
+            ? `Wind is around ${Math.round(wind)} km/h. Dry, breezy weather tends to keep pollen ` +
+              "airborne for longer, so open windows may let more of it in."
+            : `Wind is around ${Math.round(wind)} km/h. That is enough to take the edge off a ` +
+              "warm afternoon, and enough to make a light layer worth carrying.");
+      } else if (typeof temp === "number" && temp >= 25) {
+        add("🌡️", "Warm and still", hasPollen
+            ? "Warm, still, dry weather is when counts usually climb. A cooler, breezier hour " +
+              "may feel more comfortable if pollen bothers you."
+            : `Around ${Math.round(temp)}°C with little wind. Pleasant for most plans, though ` +
+              "long spells in direct sun are worth breaking up with shade or water.");
+      } else if (typeof temp === "number" && temp <= 8) {
+        add("🧥", "Cold out", `Around ${Math.round(temp)}°C. Worth a proper layer if you are ` +
+            "out for more than a few minutes.");
+      } else {
+        add("🌤️", "Settled weather", hasPollen
+            ? "No rain, strong wind or heat spike is working against you right now, so pollen " +
+              "levels are mostly down to the season."
+            : "No rain, strong wind or heat spike in the way — conditions that suit most " +
+              "outdoor plans.");
+      }
+
+      /* Without pollen there is room for the rest of the useful picture. */
+      if (!hasPollen) {
+        const uv = forecast.daily && forecast.daily.uv_index_max && forecast.daily.uv_index_max[0];
+        if (typeof uv === "number") {
+          add("☀️", uv >= 6 ? "Strong sun" : "Sun is modest",
+              uv >= 6
+                ? `UV peaks at ${Math.round(uv)} today, which is high enough to burn skin that is ` +
+                  "not used to it. Shade and a hat are the easy wins."
+                : `UV peaks at ${Math.round(uv)} today — low enough that sun protection is only ` +
+                  "a concern for very long spells outdoors.");
+        }
+        const chance = forecast.daily && forecast.daily.precipitation_probability_max &&
+                       forecast.daily.precipitation_probability_max[0];
+        if (typeof chance === "number") {
+          add("☂️", chance >= 50 ? "Keep an umbrella nearby" : "Rain is unlikely",
+              chance >= 50
+                ? `There is about a ${Math.round(chance)}% chance of rain at some point today.`
+                : `Rain probability peaks at ${Math.round(chance)}% today, so rain is unlikely ` +
+                  "to interrupt plans.");
+        }
+      }
+    }
+
+    /* --- everyday, low-effort suggestions (pollen only) --- */
+    if (rank >= 1) {
+      add("🪟", "Indoors",
+          "Keeping windows closed during the highest hours, and drying laundry indoors rather " +
+          "than outside, are the two changes people most often report making a difference.");
+    }
+    if (rank >= 2) {
+      add("👕", "After being outside",
+          "Changing clothes and rinsing your face or hair after time outdoors can help keep " +
+          "pollen out of the rest of your day.");
+    }
+
+    return out.map((o) =>
+      `<div class="pol-tip">
+         <span class="pol-tip-ic" aria-hidden="true">${o.icon}</span>
+         <div><b>${o.title}</b><p>${o.body}</p></div>
+       </div>`).join("");
+  }
+
+  /* ---------------------------------------------------------------- renderers */
+  function renderForecast() {
+    const d = S.forecast, cur = d.current;
+    const day = !!cur.is_day;
+
+    $("placeName").textContent = S.place.name;
+    $("coords").textContent = `${(+d.latitude).toFixed(3)}, ${(+d.longitude).toFixed(3)} · ${d.elevation ?? "–"} m`;
+    // Avoid mixing two clocks: say how fresh the data is, then the location's own time.
+    const ageMin = Math.max(0, Math.round((Date.now() - fetchAt) / 60000));
+    const fresh = ageMin < 2 ? "just now" : `${ageMin} min ago`;
+    $("stamp").textContent = `Refreshed ${fresh} · data for ${timeFmt.format(new Date(cur.time))} local time`;
+
+    const w = wmo(cur.weather_code, day);
+    $("temp").innerHTML = `${tempNum(cur.temperature_2m)}<sup>${S.unit === "c" ? "°C" : "°F"}</sup>`;
+    $("emoji").textContent = w.icon;
+    $("condition").textContent = w.label;
+    $("feels").textContent =
+      `${window.t("ui.feelsLike","Feels like")} ${tempStr(cur.apparent_temperature)} · ` +
+      `${cur.relative_humidity_2m}% ${window.t("ui.humidity","humidity")} · ` +
+      `${window.t("ui.dewPoint","dew point")} ${tempAbs(cur.dew_point_2m)}`;
+
+    const hero = $("hero");
+    const night = !day;
+    const rainy = [51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99].includes(cur.weather_code);
+    const clear = [0,1].includes(cur.weather_code);
+    /* The hero gradient is painted here, so this is also the only place that
+       knows whether the panel ended up dark. Night and rain always use a dark
+       wash; day-and-clear/day-overcast wash over the page background, which is
+       pale in light theme and dark in the dark theme. That last part is why
+       on-dark cannot be a fixed rule in the stylesheet: the same gradient needs
+       dark text in light theme and light text in dark theme. Getting this wrong
+       put near-white labels on a pale panel (measured 1.04:1 — invisible). */
+    let g, panelDark;
+    if (night && clear) { g = "linear-gradient(150deg,rgba(30,41,86,.92),rgba(15,23,50,.75) 55%,rgba(255,255,255,.03))"; panelDark = true; }
+    else if (night)      { g = "linear-gradient(150deg,rgba(24,34,66,.92),rgba(18,24,44,.8) 55%,rgba(255,255,255,.03))"; panelDark = true; }
+    else if (rainy)      { g = "linear-gradient(150deg,rgba(56,84,130,.85),rgba(46,64,104,.55) 55%,rgba(255,255,255,.04))"; panelDark = true; }
+    else if (clear)      { g = "linear-gradient(150deg,rgba(255,178,107,.42),rgba(99,179,255,.30) 55%,rgba(255,255,255,.04))"; panelDark = S.theme !== "light"; }
+    else                 { g = "linear-gradient(150deg,rgba(99,179,255,.32),rgba(167,139,250,.20) 55%,rgba(255,255,255,.04))"; panelDark = S.theme !== "light"; }
+    hero.style.background = g;
+    hero.classList.toggle("on-dark", panelDark);
+
+    /* icon and label kept apart so the label alone can be translated */
+    const chips = [
+      ["💨", "m.wind", `${windStr(cur.wind_speed_10m)} ${dirName(cur.wind_direction_10m)}`],
+      ["🌧️", "m.rainNow", mm(cur.precipitation)],
+      ["☁️", "m.cloud", `${cur.cloud_cover ?? "—"}%`],
+      ["🌡️", "m.pressure", `${Math.round(cur.pressure_msl ?? 0)} hPa`],
+      ["💧", "m.humidity", `${cur.relative_humidity_2m ?? "—"}%`],
+      ["👁️", "m.visibility", cur.visibility == null ? "—" : (cur.visibility / 1000).toFixed(1) + " km"],
+    ];
+    $("chips").innerHTML = chips.map(([icon, key, v]) =>
+      `<div class="chip"><span><span aria-hidden="true">${icon}</span> <span class="chip-k">${window.t(key, key)}</span></span><b>${v}</b></div>`
+    ).join("");
+
+    renderHours();
+    renderChart();
+    renderDaily();
+    renderWind();
+    renderSky();
+    renderMoisture();
+    renderGround();
+    renderSun();
+  }
+
+  function renderHours() {
+    const h = S.forecast.hourly;
+    const nowIso = S.forecast.current.time.slice(0, 13);
+    let start = h.time.findIndex((t) => t.slice(0, 13) >= nowIso);
+    if (start < 0) start = 0;
+    let html = "";
+    for (let i = start; i < Math.min(start + 24, h.time.length); i++) {
+      const isNow = h.time[i].slice(0, 13) === nowIso;
+      const w = wmo(h.weather_code[i], h.is_day ? !!h.is_day[i] : true);
+      const pop = h.precipitation_probability?.[i];
+      html += `<div class="hour${isNow ? " now" : ""}">
+        <div class="t">${isNow ? window.t("time.now", "Now") : hourFmt.format(new Date(h.time[i]))}</div>
+        <div class="e" title="${w.label}">${w.icon}</div>
+        <div class="v">${tempStr(h.temperature_2m[i])}</div>
+        <div class="p">${pop != null && pop > 15 ? pop + "%" : ""}</div>
+      </div>`;
+    }
+    $("hours").innerHTML = html;
+  }
+
+  function renderChart() {
+    const h = S.forecast.hourly;
+    const nowIso = S.forecast.current.time.slice(0, 13);
+    let start = h.time.findIndex((t) => t.slice(0, 13) >= nowIso);
+    if (start < 0) start = 0;
+    const n = Math.min(48, h.time.length - start);
+    const temps = h.temperature_2m.slice(start, start + n);
+    const rain = (h.precipitation || []).slice(start, start + n);
+
+    const W = 800, H = 190, PL = 34, PR = 12, PT = 14, PB = 28;
+    const iw = W - PL - PR, ih = H - PT - PB;
+    const shown = temps.map((c) => S.unit === "c" ? c : toF(c));
+    let lo = Math.min(...shown), hi = Math.max(...shown);
+    if (hi - lo < 4) { const m = (hi + lo) / 2; lo = m - 2; hi = m + 2; }
+    const pad = (hi - lo) * 0.15; lo -= pad; hi += pad;
+    const maxRain = Math.max(1, ...rain.filter((v) => v != null));
+
+    const x = (i) => PL + (i / (n - 1)) * iw;
+    const y = (v) => PT + ih - ((v - lo) / (hi - lo)) * ih;
+
+    let path = "";
+    shown.forEach((v, i) => {
+      if (i === 0) { path += `M${x(0).toFixed(1)},${y(v).toFixed(1)}`; return; }
+      const x0 = x(i - 1), y0 = y(shown[i - 1]), x1 = x(i), y1 = y(v);
+      const cx = (x0 + x1) / 2;
+      path += ` C${cx.toFixed(1)},${y0.toFixed(1)} ${cx.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)}`;
+    });
+    const area = `${path} L${x(n - 1).toFixed(1)},${PT + ih} L${x(0).toFixed(1)},${PT + ih} Z`;
+
+    const bw = Math.max(2, iw / n - 3);
+    let bars = "";
+    rain.forEach((v, i) => {
+      if (!v) return;
+      const bh = Math.max(2, (v / maxRain) * ih * 0.42);
+      bars += `<rect class="bar" x="${(x(i) - bw / 2).toFixed(1)}" y="${(PT + ih - bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="2"/>`;
+    });
+
+    let grid = "";
+    for (let k = 0; k <= 3; k++) {
+      const v = lo + ((hi - lo) * k) / 3, yy = y(v);
+      grid += `<line class="axis" x1="${PL}" y1="${yy.toFixed(1)}" x2="${W - PR}" y2="${yy.toFixed(1)}" stroke-dasharray="3 5"/>`;
+      grid += `<text x="${PL - 7}" y="${(yy + 4).toFixed(1)}" text-anchor="end">${Math.round(v)}°</text>`;
+    }
+    let xlab = "";
+    for (let i = 0; i < n; i += 12) {
+      const dt = new Date(h.time[start + i]);
+      const txt = i === 0 ? window.t("time.now", "Now").toLowerCase() : hourFmt.format(dt);
+      xlab += `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="${i === 0 ? "start" : "middle"}">${txt}</text>`;
+    }
+    const nowLine = `<line class="axis" x1="${x(0)}" y1="${PT}" x2="${x(0)}" y2="${PT + ih}" stroke="rgba(99,179,255,.55)" stroke-width="1.5"/>`;
+
+    $("chart").innerHTML = `
+      <defs>
+        <linearGradient id="tempGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#5fa8ff"/><stop offset="55%" stop-color="#ffb26b"/><stop offset="100%" stop-color="#fb7185"/>
+        </linearGradient>
+        <linearGradient id="rainGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(95,168,255,.85)"/><stop offset="100%" stop-color="rgba(95,168,255,.25)"/>
+        </linearGradient>
+        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(120,170,255,.28)"/><stop offset="100%" stop-color="rgba(120,170,255,0)"/>
+        </linearGradient>
+      </defs>
+      ${grid}${bars}
+      <path d="${area}" fill="url(#areaGrad)"/>
+      <path class="line" d="${path}"/>
+      ${nowLine}${xlab}`;
+
+    // chance-of-rain strip under the chart
+    const pops = (h.precipitation_probability || []).slice(start, start + 48);
+    let strip = "";
+    for (let i = 0; i < pops.length; i += 3) {
+      const v = pops[i];
+      const hgt = Math.max(3, (v / 100) * 30);
+      strip += `<div style="flex:0 0 44px;text-align:center">
+        <div style="height:30px;display:flex;align-items:flex-end;justify-content:center">
+          <div style="width:22px;height:${hgt.toFixed(0)}px;border-radius:3px;background:rgba(167,139,250,${(0.25 + v/140).toFixed(2)})"></div>
+        </div>
+        <div style="font-size:10px;color:var(--dim2);margin-top:3px">${v ?? 0}%</div>
+      </div>`;
+    }
+    $("popStrip").innerHTML = strip;
+  }
+
+  function renderDaily() {
+    const d = S.forecast.daily;
+    const lows = d.temperature_2m_min, highs = d.temperature_2m_max;
+    const gLo = Math.min(...lows), gHi = Math.max(...highs);
+    const span = Math.max(1, gHi - gLo);
+    const short = (iso) => timeFmt.format(new Date(iso));
+
+    $("dailyList").innerHTML = d.time.map((t, i) => {
+      const date = new Date(t + "T12:00");
+      const w = wmo(d.weather_code[i], true);
+      const lo = lows[i], hi = highs[i];
+      const left = ((lo - gLo) / span) * 100;
+      const width = Math.max(6, ((hi - lo) / span) * 100);
+      const name = i === 0 ? window.t("day.today", "Today")
+                 : i === 1 ? window.t("day.tomorrow", "Tomorrow")
+                 : dayFmt.format(date);
+      const pop = d.precipitation_probability_max?.[i];
+      const sun = i === 0 && d.sunrise?.[0]
+        ? `<small>↑ ${short(d.sunrise[0])} · ↓ ${short(d.sunset[0])}</small>`
+        : `<small>${dateFmt.format(date)}</small>`;
+      return `<div class="day">
+        <div class="name">${name}${sun}</div>
+        <div class="e" title="${w.label}">${w.icon}</div>
+        <div class="range">
+          <div class="lo">${tempStr(lo)}</div>
+          <div class="track"><div class="fill" style="left:${left.toFixed(1)}%;width:${width.toFixed(1)}%"></div></div>
+          <div class="hi">${tempStr(hi)}</div>
+        </div>
+        <div class="pop">${pop != null && pop > 10 ? "💧" + pop + "%" : ""}</div>
+      </div>`;
+    }).join("");
+  }
+
+  /* ------------------------------------------------------------------- wind */
+  function renderWind() {
+    const c = S.forecast.current;
+    const deg = c.wind_direction_10m ?? 0;
+    const r = 52, cx = 62, cy = 62;
+    let ticks = "";
+    for (let a = 0; a < 360; a += 45) {
+      const rad = (a - 90) * Math.PI / 180;
+      const len = a % 90 === 0 ? 7 : 4;
+      ticks += `<line class="tick" x1="${(cx + Math.cos(rad) * (r - 1)).toFixed(1)}" y1="${(cy + Math.sin(rad) * (r - 1)).toFixed(1)}"
+        x2="${(cx + Math.cos(rad) * (r - 1 - len)).toFixed(1)}" y2="${(cy + Math.sin(rad) * (r - 1 - len)).toFixed(1)}"/>`;
+    }
+    const label = (txt, a) => {
+      const rad = (a - 90) * Math.PI / 180, rr = r + 9;
+      return `<text x="${(cx + Math.cos(rad) * rr).toFixed(1)}" y="${(cy + Math.sin(rad) * rr + 3).toFixed(1)}" text-anchor="middle">${txt}</text>`;
+    };
+    // needle points the way the wind is blowing TO (from-direction + 180)
+    const toRad = ((deg + 180) - 90) * Math.PI / 180;
+    const nx = cx + Math.cos(toRad) * (r - 12), ny = cy + Math.sin(toRad) * (r - 12);
+
+    $("compass").innerHTML = `
+      <defs><linearGradient id="windGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#63b3ff"/><stop offset="100%" stop-color="#a78bfa"/>
+      </linearGradient></defs>
+      <circle class="ring" cx="${cx}" cy="${cy}" r="${r}"/>
+      ${ticks}
+      ${label("N",0)}${label("E",90)}${label("S",180)}${label("W",270)}
+      <line class="needle" x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}"/>
+      <circle class="hub" cx="${cx}" cy="${cy}" r="3.2"/>`;
+
+    $("windFacts").innerHTML = `
+      <div class="wf"><span>${L("Speed")}</span><b>${windStr(c.wind_speed_10m, 1)}</b></div>
+      <div class="wf"><span>${L("From")}</span><b>${dirName(deg)} (${Math.round(deg)}°)</b></div>
+      <div class="wf"><span>${L("Gusts")}</span><b>${windStr(c.wind_gusts_10m, 1)}</b></div>
+      <div class="wf"><span>${L("High up (10 km)")}</span><b>${windStr(c.wind_speed_250hPa)} ${dirName(c.wind_direction_250hPa)}</b></div>`;
+
+    // 24-hour wind speed + gust trend
+    const h = S.forecast.hourly;
+    const nowIso = S.forecast.current.time.slice(0, 13);
+    let start = h.time.findIndex((t) => t.slice(0, 13) >= nowIso);
+    if (start < 0) start = 0;
+    const spd = (h.wind_speed_10m || []).slice(start, start + 24).map((v) => v ?? 0);
+    const gst = (h.wind_gusts_10m || []).slice(start, start + 24).map((v) => v ?? 0);
+    if (!spd.length) return;
+
+    const W = 300, H = 52, maxV = Math.max(10, ...gst);
+    const line = (arr) => {
+      const pts = arr.map((v, i) => [
+        (i / Math.max(1, arr.length - 1)) * W,
+        H - 5 - (v / maxV) * (H - 12),
+      ]);
+      let d = "";
+      pts.forEach(([x, y], i) => {
+        if (i === 0) { d += `M${x.toFixed(1)},${y.toFixed(1)}`; return; }
+        const [x0, y0] = pts[i - 1], cxm = (x0 + x) / 2;
+        d += ` C${cxm.toFixed(1)},${y0.toFixed(1)} ${cxm.toFixed(1)},${y.toFixed(1)} ${x.toFixed(1)},${y.toFixed(1)}`;
+      });
+      return d;
+    };
+    $("windSpark").innerHTML = `
+      <path d="${line(gst)}" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-dasharray="4 4" stroke-linecap="round" opacity=".85"/>
+      <path d="${line(spd)}" fill="none" stroke="#63b3ff" stroke-width="2.2" stroke-linecap="round"/>`;
+    $("windPeak").textContent = window.t("m.gustsUpTo", "gusts up to {0}", [windStr(Math.max(...gst))]);
+  }
+
+  /* -------------------------------------------------------------------- sky */
+  function renderSky() {
+    const c = S.forecast.current;
+    const lo = c.cloud_cover_low ?? 0, mid = c.cloud_cover_mid ?? 0, hi = c.cloud_cover_high ?? 0;
+    const tot = Math.max(1, c.cloud_cover ?? (lo + mid + hi));
+    $("cloudSeg").innerHTML = `
+      <i style="width:${(lo / tot * 100).toFixed(1)}%;background:#3d5a8a" title="Low cloud ${lo}%"></i>
+      <i style="width:${(mid / tot * 100).toFixed(1)}%;background:#5f8dd6" title="Middle cloud ${mid}%"></i>
+      <i style="width:${(hi / tot * 100).toFixed(1)}%;background:#9cc2f5" title="High cloud ${hi}%"></i>`;
+
+    const sunH = S.forecast.daily.sunshine_duration?.[0];
+    metricList($("skyMetrics"), [
+      metric("Total cloud", c.cloud_cover == null ? null : `${c.cloud_cover}%`,
+             `Low ${lo}% · Mid ${mid}% · High ${hi}%`),
+      metric("Temperature higher up", c.temperature_850hPa == null ? null : tempStr(c.temperature_850hPa, 1),
+             "At about 1,500 m — cold air here means showers can build"),
+      metric("Moisture high up", c.relative_humidity_700hPa == null ? null : `${c.relative_humidity_700hPa}%`,
+             "Humidity around 3,000 m — the fuel for clouds and heavy rain"),
+      metric("Freezing level", c.freezing_level_height == null ? null : `${(c.freezing_level_height/1000).toFixed(1)} km`,
+             "How high up the air reaches 0 °C"),
+      metric("Sunshine forecast", sunH == null ? null : `${(sunH/3600).toFixed(1)} h`,
+             "Bright sunshine expected across the whole of today, not the amount so far"),
+    ], "Upper-air data is not available for this point.");
+  }
+
+  /* --------------------------------------------------------------- moisture */
+  function renderMoisture() {
+    const c = S.forecast.current;
+    const rh = c.relative_humidity_2m, dp = c.dew_point_2m, t = c.temperature_2m;
+    const spread = (t != null && dp != null) ? t - dp : null;
+    const spreadNote = spread == null ? "—"
+      : spread < 2 ? "Air is nearly saturated — fog or rain is likely."
+      : spread < 6 ? "Fairly humid — feels sticky."
+      : spread < 12 ? "Comfortable."
+      : "Dry air.";
+
+    metricList($("moistureMetrics"), [
+      metric("Humidity", rh == null ? null : `${rh}%`, "How much invisible water the air is holding"),
+      metric("Dew point", dp == null ? null : tempStr(dp, 1),
+             "The temperature air must cool to before water condenses out"),
+      metric("Temp − dew point", spread == null ? null : `${spread.toFixed(1)}°`,
+             `${spreadNote} Worked out from the unrounded values, so it may differ slightly from subtracting the two rounded figures above.`),
+      metric("Evaporation", c.et0_fao_evapotranspiration == null ? null
+             : `${num(c.et0_fao_evapotranspiration, 2)} mm/h`,
+             "Water leaving soil and plants each hour — high values dry the ground out"),
+      metric("Vapour deficit", c.vapour_pressure_deficit == null ? null
+             : num(c.vapour_pressure_deficit, 2, "kPa"),
+             "How thirsty the air is — above about 2 kPa plants start to suffer"),
+    ], "Moisture data is not available for this point.");
+  }
+
+  /* ----------------------------------------------------------------- ground */
+  function renderGround() {
+    const c = S.forecast.current;
+    const soil = c.soil_temperature_0cm, air = c.temperature_2m;
+    const diff = (soil != null && air != null) ? soil - air : null;
+    const sm = c.soil_moisture_0_to_1cm;
+    const smPct = sm == null ? null : Math.min(100, (sm / 0.5) * 100);
+
+    const rows = [
+      metric("Ground temperature", soil == null ? null : tempStr(soil, 1),
+        diff == null ? "Tarmac, sand and roofs heat far above the air temperature"
+          : `${diff >= 0 ? "+" : ""}${diff.toFixed(1)}° compared with the air`),
+      metric("How wet the soil is", sm == null ? null : `${(sm * 100).toFixed(0)}%`,
+        sm == null ? "" : sm < 0.15 ? "Dry — rain will run off instead of soaking in."
+          : sm < 0.3 ? "Damp — reasonable for plants."
+          : "Wet — ground is holding plenty of water."),
+      metric("Sun energy at the ground",
+        c.shortwave_radiation == null ? null : num(c.shortwave_radiation, 0, "W/m²"),
+        `Direct ${num(c.direct_radiation,0)} + diffuse ${num(c.diffuse_radiation,0)} W/m². Estimated from sunshine and cloud, not measured.`),
+      metric("Snow on the ground", c.snow_depth == null ? null
+        : (c.snow_depth * 100 < 1 && c.snow_depth > 0
+            ? `${(c.snow_depth * 100).toFixed(1)} cm`
+            : `${(c.snow_depth * 100).toFixed(0)} cm`),
+        `Falling now: ${num(c.snowfall, 1, "cm/h")} · 10 cm of snow ≈ 10 mm of rain when it melts`),
+      metric("Visibility", c.visibility == null ? null : `${(c.visibility/1000).toFixed(1)} km`,
+        "How far you can see — haze, dust and rain all cut this down"),
+      metric("Air pressure", c.pressure_msl == null ? null : `${Math.round(c.pressure_msl)} hPa`,
+        `At your altitude: ${Math.round(c.surface_pressure ?? 0)} hPa · normal sea-level pressure is about 1013 hPa`),
+    ].filter(Boolean);
+    if (smPct != null) {
+      rows.push(`<div class="metric-bar" title="Soil moisture"><i style="width:${smPct.toFixed(1)}%"></i></div>`);
+    }
+    metricList($("groundMetrics"), rows, "Ground data is not available for this point.");
+  }
+
+  /* ------------------------------------------------------------------ storm */
+  function renderStorm() {
+    const c = S.forecast.current;
+    const cape = c.cape ?? 0;
+    const li = c.lifted_index;
+    // simple 0-100 risk score from CAPE (capped at 3000 J/kg)
+    const score = Math.max(0, Math.min(100, Math.round((cape / 3000) * 100)));
+    const bands = [
+      [10, "Very low", "Storms unlikely."],
+      [30, "Low", "A stray shower is possible."],
+      [55, "Moderate", "Thunder is possible, especially in the afternoon."],
+      [78, "High", "Thunderstorms likely where air rises."],
+      [100, "Very high", "Severe storms possible — stay alert to official warnings."],
+    ];
+    const band = bands.find((b) => score <= b[0]);
+    const colour = score <= 10 ? "var(--good)" : score <= 30 ? "var(--ok)" : score <= 55 ? "var(--warn)"
+      : score <= 78 ? "var(--warm)" : "var(--bad)";
+    $("stormVal").textContent = score;
+    $("stormVal").style.color = colour;
+    $("stormName").textContent = band[1];
+    $("stormName").style.color = colour;
+    $("stormNote").textContent = `${band[2]} Measured from CAPE ${Math.round(cape)} J/kg` +
+      (li != null ? ` and lifted index ${li.toFixed(1)}.` : ".") +
+      " This is how favourable the air is for storms, not a count of lightning strikes.";
+    $("stormPin").style.marginLeft = `calc(${score}% - 1.5px)`;
+
+    // 24h storm-energy trend from the hourly CAPE series
+    const h = S.forecast.hourly;
+    const nowIso = S.forecast.current.time.slice(0, 13);
+    let start = h.time.findIndex((t) => t.slice(0, 13) >= nowIso);
+    if (start < 0) start = 0;
+    const series = (h.cape || []).slice(start, start + 24).map((v) => v ?? 0);
+    if (!series.length) return;
+
+    const W = 300, H = 46, maxV = Math.max(300, ...series);
+    const pts = series.map((v, i) => {
+      const x = (i / Math.max(1, series.length - 1)) * W;
+      const y = H - 4 - (v / maxV) * (H - 10);
+      return [x, y];
+    });
+    let line = "";
+    pts.forEach(([x, y], i) => {
+      if (i === 0) { line += `M${x.toFixed(1)},${y.toFixed(1)}`; return; }
+      const [x0, y0] = pts[i - 1], cxm = (x0 + x) / 2;
+      line += ` C${cxm.toFixed(1)},${y0.toFixed(1)} ${cxm.toFixed(1)},${y.toFixed(1)} ${x.toFixed(1)},${y.toFixed(1)}`;
+    });
+    const area = `${line} L${W},${H} L0,${H} Z`;
+    $("stormSpark").innerHTML = `
+      <defs><linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="rgba(251,146,60,.42)"/>
+        <stop offset="100%" stop-color="rgba(251,146,60,0)"/>
+      </linearGradient></defs>
+      <path d="${area}" fill="url(#sparkFill)"/>
+      <path d="${line}" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/>`;
+
+    const peak = Math.max(...series);
+    const peakHour = series.indexOf(peak);
+    $("stormPeak").textContent = peak > 50
+      ? window.t("storm.peak", "peak {0} around {1}",
+          [`${Math.round(peak)} J/kg`, hourFmt.format(new Date(h.time[start + peakHour]))])
+      : "no storm energy expected";
+  }
+
+  /* ------------------------------------------------------------ environment */
+  function renderEnvironment() {
+    const a = S.air?.current || {};
+    const c = S.forecast.current;
+    const dry = (c.relative_humidity_2m ?? 50) / 100;
+    const heat = Math.max(0, Math.min(1, ((c.temperature_2m ?? 20) - 15) / 25));
+    const windF = Math.max(0, Math.min(1, (c.wind_speed_10m ?? 0) / 45));
+    const fire = Math.round(Math.min(100, (35 * (1 - dry) + 45 * heat + 20 * windF)));
+    const fireName = fire < 20 ? "Very low" : fire < 40 ? "Low" : fire < 60 ? "Moderate" : fire < 80 ? "High" : "Very high";
+
+    // ---- What's on the ground: real OSM land-use mix around the point ----
+    const land = S.land;
+    const mixEl = $("landMix");
+    if (land && land.available && land.mix && land.mix.length) {
+      const bars = land.mix.map((m) =>
+        `<i style="width:${Math.max(2, m.pct)}%;background:${m.colour}" title="${m.label} ${m.pct}%"></i>`).join("");
+      const landLabel = (name) => {
+        const key = LAND_KEY[name];
+        return key ? window.t(key, name) : name;
+      };
+      const legend = land.mix.slice(0, 4).map((m) =>
+        `<span><b style="background:${m.colour}"></b>${landLabel(m.label)} ${m.pct < 1 ? "&lt;1" : Math.round(m.pct)}%</span>`).join("");
+      mixEl.innerHTML = `
+        <div class="metric" style="border-top:0;padding-bottom:6px">
+          <div class="k"><b>${L("What's on the ground")}</b></div>
+          <div class="v">${land.dominant_emoji} ${landLabel(land.dominant)}</div>
+          <div class="sub">Land use within about ${land.radius_km} km, from OpenStreetMap. A mapped mix,
+            not a satellite reading — background information, not a live measurement.</div>
+        </div>
+        <div class="seg">${bars}</div>
+        <div class="seg-legend">${legend}</div>`;
+    } else if (land && land.static_host) {
+      mixEl.innerHTML = `<div class="empty-state"><span>∅</span>
+        <div>Land cover needs the small Python server (run <code>server.py</code>). On static
+        hosting this feature is skipped rather than guessed.</div></div>`;
+    } else {
+      mixEl.innerHTML = `<div class="empty-state"><span>∅</span>
+        <div>No land-use records are mapped around this point — remote areas often have none.
+        Nothing is guessed here.</div></div>`;
+    }
+
+    metricList($("envMetrics"), [
+      metric("Heat-trapping gases",
+        a.carbon_dioxide == null ? null : `${Math.round(a.carbon_dioxide)} ppm CO₂`,
+        (a.carbon_dioxide == null
+          ? ""
+          : `Locally modelled, so it rises near cities — ${
+              a.carbon_dioxide >= 500 ? "this reading is well above the global background, typical of a big city"
+              : a.carbon_dioxide >= 430 ? "above the ~424 ppm global background"
+              : "close to the ~424 ppm global background"}. `) +
+        (a.methane == null ? "" : `Methane ${num(a.methane,0)} µg/m³. `) +
+        "These describe the climate, not today's weather."),
+      metric("Fire risk", `${fire} / 100`,
+        `${fireName} — from today's heat, dryness and wind. A danger rating, not a map of burning fires.`),
+    ], "Environment data is not available for this point.");
+  }
+
+  /* -------------------------------------------------------------------- sea */
+  function renderSea() {
+    const card = $("sea");
+    const cur = S.marine?.current;
+    // the proxy now answers 200 {available:false} where a model has no coverage
+    if (S.marine?.available === false) { card.hidden = true; return; }
+    if (!cur || cur.wave_height == null) { card.hidden = true; return; }
+    card.hidden = false;
+
+    const dLat = Math.abs((S.marine.latitude ?? S.place.lat) - S.place.lat);
+    const dLon = Math.abs((S.marine.longitude ?? S.place.lon) - S.place.lon) * Math.cos(S.place.lat * Math.PI / 180);
+    const km = Math.round(Math.hypot(dLat, dLon) * 111);
+    $("seaDist").textContent = km > 0 ? `nearest coast ≈ ${km} km` : "";
+
+    const wh = cur.wave_height;
+    const wavesNote = wh < 0.3 ? "Calm." : wh < 1.25 ? "Choppy but fine for most boats."
+      : wh < 3 ? "Rough — take care in small craft." : "Dangerous for small craft.";
+    metricList($("seaMetrics"), [
+      metric("Waves", wh == null ? null : `${wh.toFixed(1)} m`,
+        `${wavesNote} Period ${num(cur.wave_period,1,"s")} · from ${dirName(cur.wave_direction)}`),
+      metric("Sea currents", cur.ocean_current_velocity == null ? null
+        : num(cur.ocean_current_velocity, 1, "km/h"),
+        `Flowing towards ${dirName(cur.ocean_current_direction)}`),
+      metric("Sea temperature", cur.sea_surface_temperature == null ? null
+        : tempStr(cur.sea_surface_temperature, 1),
+        cur.sea_surface_temperature >= 28 ? "Very warm — feeds tropical storms." : "Comfortable for swimming."),
+      metric("Tide height", cur.sea_level_height_msl == null ? null
+        : `${num(cur.sea_level_height_msl, 2, "m")}`,
+        "Height of the sea now, including the tide. Not the same as sea-level rise."),
+    ], "Sea data is not available at this point.");
+  }
+
+  /* ------------------------------------------------------------ air quality */
+  function renderAir() {
+    const c = S.air?.current;
+    if (!c || c.european_aqi == null) {
+      $("aqiNum").textContent = "—";
+      $("aqiLabel").textContent = "Unavailable";
+      $("aqiNote").textContent = "Air quality data not available for this location.";
+      $("pollutants").innerHTML = "";
+      $("pollutantSummary").innerHTML = "";
+      $("aqiPin").style.marginLeft = "0%";
+      $("air").classList.add("dim-card");
+      return;
+    }
+    $("air").classList.remove("dim-card");
+    const bands = [
+      [20, "Good", "var(--good)", "aqi.band.good"],
+      [40, "Fair", "var(--ok)", "aqi.band.fair"],
+      [60, "Moderate", "var(--warn)", "aqi.band.moderate"],
+      [80, "Poor", "#d97706", "aqi.band.poor"],
+      [100, "Very poor", "var(--bad)", "aqi.band.veryPoor"],
+      [9999, "Extremely poor", "var(--accent2)", "aqi.band.extremelyPoor"],
+    ];
+    const aqi = Math.round(c.european_aqi);
+    const band = bands.find((b) => aqi <= b[0]);
+    $("aqiNum").textContent = aqi;
+    $("aqiNum").style.color = band[2];
+    $("aqiLabel").textContent = window.t(band[3], band[1]);
+    $("aqiLabel").style.color = band[2];
+
+    /* A number without its scale is misleading. The same air reads 49 on the
+       European scale and 82 on the US scale, and people compare this figure to
+       whatever their phone shows. So show BOTH, and name the model's grid,
+       because a single grid cell covers a whole town — this is a regional
+       estimate, not an instrument at the end of the street. */
+    const usAqi = c.us_aqi == null ? null : Math.round(c.us_aqi);
+    const usBandPair = usAqi == null ? null
+      : usAqi <= 50 ? ["Good", "aqi.us.good"]
+      : usAqi <= 100 ? ["Moderate", "aqi.us.moderate"]
+      : usAqi <= 150 ? ["Unhealthy for sensitive groups", "aqi.us.sensitive"]
+      : usAqi <= 200 ? ["Unhealthy", "aqi.us.unhealthy"]
+      : usAqi <= 300 ? ["Very unhealthy", "aqi.us.veryUnhealthy"]
+      : ["Hazardous", "aqi.us.hazardous"];
+    const usBand = usBandPair ? window.t(usBandPair[1], usBandPair[0]) : null;
+    const usLine = usAqi == null ? ""
+      : " " + window.t("aqi.usScale",
+          "On the US EPA scale the same air reads {0} ({1}).",
+          [usAqi, usBand]);
+
+    $("aqiNote").textContent = (aqi <= 40
+        ? window.t("aqi.note.clean", "Air is clean — good for outdoor activity.")
+      : aqi <= 60 ? window.t("aqi.note.acceptable", "Acceptable for most people.")
+      : aqi <= 80 ? window.t("aqi.note.sensitive", "Sensitive groups should limit prolonged exertion outdoors.")
+      : window.t("aqi.note.reduce", "Consider reducing outdoor exertion.")) + usLine;
+
+    /* Scale note: which model, how coarse, and how fresh. */
+    const scaleEl = $("aqiScale");
+    if (scaleEl) scaleEl.textContent = window.t("aqi.gridNote",
+      "Modelled estimate from the CAMS Europe air-quality model at about 11 km " +
+      "resolution — one grid cell covers roughly a whole town, so nearby places " +
+      "can share the same figure. Not a reading from a monitor near you.");
+    $("aqiPin").style.marginLeft = `calc(${Math.min(100, aqi / 1.2)}% - 1.5px)`;
+
+    const p = [
+      [L("PM2.5 (haze)"), c.pm2_5], [L("PM10 (dust)"), c.pm10], [L("Ozone"), c.ozone],
+      [L("NO₂ (traffic)"), c.nitrogen_dioxide], ["SO₂", c.sulphur_dioxide],
+      ["CO", c.carbon_monoxide], [L("Formaldehyde"), c.formaldehyde],
+      [L("Haze thickness"), c.aerosol_optical_depth], [L("Dust"), c.dust],
+    ].filter(([, v]) => v != null);
+    $("pollutants").innerHTML = p.map(([k, v]) =>
+      `<span>${k} <b>${v < 10 ? Number(v).toFixed(1) : Math.round(v)}</b></span>`).join("");
+
+    // "Pollution gases" is its own feature: lead with a real reading (the
+    // ozone + traffic-NO2 load), then note how many gases were reported.
+    const gases = [
+      ["O₃", c.ozone], ["NO₂", c.nitrogen_dioxide], ["SO₂", c.sulphur_dioxide],
+      ["CO", c.carbon_monoxide], ["NH₃", c.ammonia], ["HCHO", c.formaldehyde],
+    ].filter(([, v]) => v != null);
+    const lead = (c.ozone != null && c.nitrogen_dioxide != null)
+      ? `O₃+NO₂ ${Math.round(c.ozone + c.nitrogen_dioxide)}`
+      : gases[0] ? `${gases[0][0]} ${Math.round(gases[0][1])}` : null;
+    $("pollutantSummary").innerHTML = lead
+      ? `<div class="metric"><div class="k"><b>${L("Smog-forming gases")}</b></div>` +
+        `<div class="v">${lead} µg/m³</div>` +
+        `<div class="sub">Ozone plus traffic nitrogen — high values mean the air worsens through the day. ` +
+        `${gases.length} gas${gases.length === 1 ? "" : "es"} reported here.</div></div>`
+      : "";
+  }
+
+  /* -------------------------------------------------------------------- sun */
+  function renderSun() {
+    const d = S.forecast.daily;
+    const rise = new Date(d.sunrise[0]), set = new Date(d.sunset[0]);
+    const riseT = rise.getTime(), setT = set.getTime();
+    const hhmm = (dt) => timeFmt.format(dt);
+
+    // Near the poles there is no ordinary sunrise/sunset:
+    //   polar night  -> sunrise and sunset are the SAME instant, daylight 0 h
+    //   midnight sun -> sunset is a full 24 h after sunrise, daylight 24 h
+    // Comparing clock times alone gets this wrong, so use daylight duration
+    // and the sunrise->sunset gap together.
+    const mins = Math.round((setT - riseT) / 60000);
+    const dayLight = (d.daylight_duration?.[0] ?? 0) / 3600;
+    const polar = dayLight < 0.5 || dayLight > 23.5 || mins <= 1 || mins >= 1439;
+    if (polar) {
+      const darkness = dayLight < 1;
+      $("dayLen").textContent = darkness ? "polar night" : "midnight sun";
+      $("sunrise").textContent = window.t(darkness ? "sun.noSunrise":"sun.noSunset", darkness ? "no sunrise" : "no sunset");
+      $("sunset").textContent = window.t(darkness ? "sun.noSunset":"sun.noSunrise", darkness ? "no sunset" : "no sunrise");
+    } else {
+      $("dayLen").textContent = `${Math.floor(mins/60)}h ${mins%60}m ${window.t("ui.daylight","daylight")}`;
+      $("sunrise").textContent = hhmm(rise);
+      $("sunset").textContent = hhmm(set);
+    }
+
+    const uv = d.uv_index_max?.[0];
+    if (uv == null) {
+      $("uvNum").textContent = "—"; $("uvNote").textContent = "UV data unavailable.";
+      $("uvPin").style.left = "0%";
+    } else {
+      const v = Math.round(uv);
+      const note = v <= 2 ? "Low — no protection needed."
+        : v <= 5 ? "Moderate — wear sunscreen around midday."
+        : v <= 7 ? "High — seek shade during midday hours."
+        : v <= 10 ? "Very high — avoid direct sun 10am–4pm."
+        : "Extreme — stay indoors where possible.";
+      $("uvNum").textContent = v;
+      $("uvNote").textContent = note;
+      $("uvPin").style.left = `calc(${Math.min(100, (uv / 12) * 100)}% - 1.5px)`;
+    }
+
+    const nowT = new Date(S.forecast.current.time).getTime();
+    let frac = Math.min(1, Math.max(0, (nowT - riseT) / (setT - riseT)));
+    const before = nowT < riseT, after = nowT > setT;
+    const cx = 150, cy = 96, rx = 126, ry = 78;
+    const pt = (f) => { const a = Math.PI * (1 - f); return [cx + rx * Math.cos(a), cy - ry * Math.sin(a)]; };
+    const [px, py] = pt(frac);
+    const arcPath = (f0, f1) => {
+      const [x0, y0] = pt(f0), [x1, y1] = pt(f1);
+      return `M${x0.toFixed(1)},${y0.toFixed(1)} A${rx},${ry} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)}`;
+    };
+    const visible = !polar && !before && !after;
+    const fill = visible ? "#ffd166" : "rgba(160,175,205,.55)";
+    const arc = $("sunarc");
+    if (!arc) return;
+    arc.innerHTML = `
+      <defs><linearGradient id="sunGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#fb923c"/><stop offset="50%" stop-color="#facc15"/><stop offset="100%" stop-color="#fb7185"/>
+      </linearGradient></defs>
+      <line class="horizon" x1="8" y1="96" x2="292" y2="96"/>
+      <path class="arc" d="${arcPath(0,1)}"/>
+      ${visible && frac > 0.01 ? `<path class="arcfill" d="${arcPath(0, frac)}"/>` : ""}
+      ${visible ? `<circle class="glow" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="11" fill="${fill}"/>` : ""}
+      ${polar ? "" : `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="6.5" fill="${fill}" stroke="rgba(0,0,0,.28)" stroke-width="1"/>`}
+      <text x="8" y="110">${polar ? "—" : hhmm(rise)}</text>
+      <text x="292" y="110" text-anchor="end">${polar ? "—" : hhmm(set)}</text>
+      <text x="150" y="110" text-anchor="middle">${
+        polar ? (dayLight < 1 ? window.t("sun.polarNight","polar night")
+                              : window.t("sun.midnightSun","midnight sun"))
+        : visible ? window.t("ui.daylight","daylight")
+        : before ? window.t("sun.beforeSunrise","before sunrise")
+                 : window.t("sun.afterSunset","after sunset")}</text>`;
+  }
+
+  /* --------------------------------------------------------------- searching */
+  const resultsEl = $("results"), qEl = $("q");
+  let searchTimer = null, lastResults = [];
+  const closeResults = () => { resultsEl.classList.remove("on"); qEl.setAttribute("aria-expanded", "false"); };
+
+  async function search(q) {
+    if (q.trim().length < 2) { closeResults(); return; }
+    try {
+      const data = await getJSON("/api/search?" + qs({ name: q, count: 6, language: "en", format: "json" }));
+      lastResults = data.results || [];
+      resultsEl.innerHTML = lastResults.length
+        ? lastResults.map((r, i) => {
+            const meta = [r.admin1, r.country_code || r.country].filter(Boolean).join(" · ");
+            return `<button data-i="${i}" role="option"><span>${r.name}</span><span class="meta">${meta}</span></button>`;
+          }).join("")
+        : `<div class="empty">No places found for “${q.replace(/[<>&]/g, "")}”.</div>`;
+      resultsEl.classList.add("on");
+      qEl.setAttribute("aria-expanded", "true");
+    } catch { closeResults(); }
+  }
+
+  qEl.addEventListener("input", (e) => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => search(e.target.value), 260);
+  });
+  qEl.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { closeResults(); qEl.blur(); }
+    if (e.key === "Enter") { e.preventDefault(); resultsEl.querySelector("button")?.click(); }
+  });
+  resultsEl.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-i]");
+    if (!btn) return;
+    const r = lastResults[+btn.dataset.i];
+    const name = [r.name, r.admin1 || r.country].filter(Boolean).join(", ");
+    S.place = { name, lat: r.latitude, lon: r.longitude };
+    store.set("skyline.place", JSON.stringify(S.place));
+    qEl.value = ""; closeResults(); load();
+    history.replaceState(null, "", `?lat=${r.latitude.toFixed(4)}&lon=${r.longitude.toFixed(4)}&name=${encodeURIComponent(name)}`);
+  });
+  document.addEventListener("click", (e) => { if (!e.target.closest(".search")) closeResults(); });
+
+
+  /* ------------------------------------------------------------------ language
+     A compact button beside the location name opens a list of languages, each
+     shown in its OWN script so a reader can find their language without reading
+     English. The chosen language persists and is re-applied on the next visit;
+     ?lang=xx overrides for a single load. */
+
+  /* ------------------------------------------------------------------ buttons */
+  /* ------------------------------------------------------------------ location
+     "Use my location" is a bonus, not a requirement. It fails for four different
+     reasons and they need four different answers — telling someone "permission
+     denied" when their browser blocked it for an unrelated reason sends them
+     hunting for a setting that was never the problem.
+
+       1. inside an iframe whose sandbox/allow attribute omits geolocation
+          -> no permission prompt is ever shown; the document itself is barred
+       2. not a secure context (http:// on a LAN address, file://)
+          -> browsers refuse geolocation on insecure origins, full stop
+       3. the person declined the prompt        -> a real permission decision
+       4. no fix (timeout, no GPS)              -> try again or search
+
+     None of these stop the site working: the search box and the saved city are
+     both unaffected, so the message says that instead of showing a red error. */
+  /* Are we embedded? Reading window.top throws across origins, and a throw
+     means yes: we are in a cross-origin frame. */
+  const inFrame = (() => {
+    try { return window.self !== window.top; }
+    catch (e) { return true; }
+  })();
+
+  function locationNotice(msg, actionLabel) {
+    showNotice(msg, actionLabel || "Search a city", () => {
+      qEl.focus();
+      qEl.scrollIntoView({ block: "center", behavior: "smooth" });
+    });
+  }
+
+  /* Wording matters here: in an embedded preview nothing is wrong with the
+     visitor's browser, and telling them to "check location permissions" sends
+     them hunting for a setting that was never the problem. */
+  const blockedMessage = () => inFrame
+    ? "Location is blocked in this embedded preview — search for a city instead. " +
+      "It works normally when the site is opened on its own address."
+    : "Location is blocked for this site — search for a city instead, or allow " +
+      "location in your browser's site settings.";
+
+  $("geo").addEventListener("click", () => {
+    if (!navigator.geolocation) {
+      return locationNotice("This browser has no location support — search for a city instead.");
+    }
+    if (!window.isSecureContext) {
+      return locationNotice("Location needs an https address, so it is off here — search for a city instead.");
+    }
+
+    $("geo").textContent = "⏳";
+    $("geo").setAttribute("aria-busy", "true");
+    const done = () => {
+      $("geo").textContent = "📍";
+      $("geo").removeAttribute("aria-busy");
+    };
+
+    const ask = () => navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        done();
+        hideNotice();
+        S.place = { name: "My location", lat: pos.coords.latitude, lon: pos.coords.longitude };
+        load();
+      },
+      (err) => {
+        done();
+        if (err.code === 1) return locationNotice(blockedMessage());
+        if (err.code === 2) return locationNotice("Your device could not find a position — search for a city instead.");
+        if (err.code === 3) return locationNotice("Location took too long to answer — search for a city instead.");
+        locationNotice("Location is not available here — search for a city instead.");
+      },
+      { timeout: 10000, maximumAge: 300000 }
+    );
+
+    /* Check the policy before asking. If location is already denied — which is
+       what an embedded preview always reports — calling getCurrentPosition
+       only produces a console warning and the same failure, so skip straight
+       to the explanation. Nothing is lost: a real visitor whose setting is
+       "ask" still gets the normal prompt. */
+    if (navigator.permissions?.query) {
+      navigator.permissions.query({ name: "geolocation" }).then((st) => {
+        if (st.state === "denied") { done(); locationNotice(blockedMessage()); }
+        else ask();
+      }).catch(ask);
+    } else {
+      ask();
+    }
+  });
+
+  /* Anything built by JS has to be rebuilt when the language changes. */
+  window.__renderedByJS = () => {
+    /* Each renderer is isolated: a failure in one (a missing element, a partial
+       payload) must not stop the others from picking up the new language. An
+       earlier version let one throw abort the whole chain, which silently left
+       half the page in the previous language. */
+    const safe = (fn, label) => {
+      try { fn(); } catch (e) {
+        if (window.console) console.warn("[i18n] " + label + " failed:", e.message);
+      }
+    };
+    safe(buildFormatters, "buildFormatters");
+    if (S.forecast) {
+      safe(renderForecast, "renderForecast");
+      safe(renderStorm, "renderStorm");
+      safe(renderEnvironment, "renderEnvironment");
+    }
+    if (S.air) safe(renderAir, "renderAir");
+    safe(renderPollen, "renderPollen");
+  };
+
+  $("unit").addEventListener("click", () => {
+    S.unit = S.unit === "c" ? "f" : "c";
+    store.set("skyline.unit", S.unit);
+    $("unit").textContent = S.unit === "c" ? "°C" : "°F";
+    if (S.forecast) { renderForecast(); renderStorm(); }
+  });
+
+  $("theme").addEventListener("click", () => {
+    S.theme = S.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = S.theme;
+    store.set("skyline.theme", S.theme);
+    $("theme").textContent = S.theme === "dark" ? "☀️" : "🌙";
+    if (S.forecast) renderForecast();
+  });
+
+  $("retry").addEventListener("click", load);
+  const showError = (m) => { $("statusMsg").textContent = m; $("status").classList.add("on"); };
+
+  /* A notice is not an error: the site is fine, one optional feature is not. */
+  let noticeAction = null;
+  const showNotice = (m, label, fn) => {
+    $("noticeMsg").textContent = m;
+    const act = $("noticeAct");
+    if (label && fn) {
+      act.textContent = label;
+      act.setAttribute("aria-label", label);
+      noticeAction = fn;
+      act.hidden = false;
+    } else {
+      act.textContent = "";
+      act.removeAttribute("aria-label");
+      act.hidden = true;
+      noticeAction = null;
+    }
+    $("notice").classList.add("on");
+  };
+  const hideNotice = () => { $("notice").classList.remove("on"); noticeAction = null; };
+  $("noticeAct").addEventListener("click", () => {
+    const fn = noticeAction;
+    hideNotice();
+    if (fn) fn();
+  });
+  const hideError = () => $("status").classList.remove("on");
+
+  /* -------------------------------------------------------------------- init */
+  document.documentElement.dataset.theme = S.theme;
+  $("theme").textContent = S.theme === "dark" ? "☀️" : "🌙";
+  $("unit").textContent = S.unit === "c" ? "°C" : "°F";
+
+  const p = new URLSearchParams(location.search);
+  if (p.get("lat") && p.get("lon")) {
+    S.place = { name: p.get("name") || "Selected location", lat: +p.get("lat"), lon: +p.get("lon") };
+  } else {
+    const saved = store.get("skyline.place");
+    if (saved) { try { S.place = JSON.parse(saved); } catch {} }
+  }
+  $("placeName").textContent = S.place.name;
+  load();
+  setInterval(load, 600000);
+})();
+</script>
+</body>
+</html>

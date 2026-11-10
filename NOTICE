@@ -1,0 +1,26 @@
+Skyline — free weather website
+==============================
+
+Author / maintainer
+-------------------
+Divyansh Maharana
+This project was designed, built and is maintained by Divyansh Maharana.
+
+Copyright (c) 2026 Divyansh Maharana. All rights reserved.
+
+Third-party data and attribution
+--------------------------------
+Weather, air-quality, marine and geocoding data:
+    Open-Meteo — https://open-meteo.com/ — licensed CC-BY 4.0
+    Forecast models originate from national meteorological services.
+
+Map / land-cover data:
+    © OpenStreetMap contributors — https://www.openstreetmap.org/copyright
+    Licensed under the Open Database License (ODbL).
+
+Pollen band thresholds and the lifestyle guidance are original to this
+project, based on published general guidance; they are not a medical device
+and must not be used for diagnosis or treatment decisions.
+
+The 27 verbatim feature notes on the guide page are the author's own text and
+remain in English in every language, by design.

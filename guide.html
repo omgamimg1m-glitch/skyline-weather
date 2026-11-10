@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title data-i18n="guide.title">What each feature means — Skyline</title>
+<meta name="description" content="A plain-English guide to every feature on the Skyline weather site: what it is, what it tells you, and how far you can trust it." />
+  <!-- Tell search engines this is the one true address for the page.
+       Without it, a renamed site and its new name look like two sites
+       with identical content, and Google picks a winner for you. -->
+  <link rel="canonical" href="https://skyline-free-weather.netlify.app/guide.html" />
+  <meta property="og:url" content="https://skyline-free-weather.netlify.app/guide.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#0b1020" />
+<meta name="author" content="Divyansh Maharana" />
+<meta name="copyright" content="© 2026 Divyansh Maharana" />
+<meta property="og:site_name" content="Skyline" />
+<meta property="og:title" content="What each feature means — Skyline" />
+<meta property="og:description" content="A plain-English guide to every feature on the Skyline weather site: what it is, what it tells you, and how far you can trust it." />
+<meta property="og:type" content="website" />
+  <meta property="og:image" content="https://skyline-free-weather.netlify.app/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Skyline weather forecast showing current conditions and the next 24 hours" />
+  <meta name="twitter:image" content="https://skyline-free-weather.netlify.app/og-image.png" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Skyline — Free Weather Forecast",
+  "author": { "@type": "Person", "name": "Divyansh Maharana", "jobTitle": "Creator and maintainer" },
+  "creator": { "@type": "Person", "name": "Divyansh Maharana" },
+  "copyrightHolder": { "@type": "Person", "name": "Divyansh Maharana" },
+  "copyrightYear": 2026,
+  "inLanguage": ["en","hi","bn","or","es","fr","de","pt","ru","ar","zh","ja","ko","id"],
+  "isAccessibleForFree": true
+}
+</script>
+<!-- Built by Divyansh Maharana -->
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛅</text></svg>" />
+<link rel="stylesheet" href="styles.css?v=20261110-fed219e6" />
+<script src="locales/en.js?v=20261110-fed219e6"></script>
+<script src="i18n.js?v=20261110-fed219e6"></script>
+<script src="lang-picker.js?v=20261110-fed219e6"></script>
+<script src="gate.js?v=20261110-fed219e6"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <a class="brand" href="guide.html">
+      <div class="mark">⛅</div>
+      <div>Skyline<small data-i18n="brand.tagline">free weather</small></div>
+    </a>
+    <div class="spacer"></div>
+    <nav class="tabs" aria-label="Main">
+      <a href="guide.html" aria-current="page" data-i18n="nav.guide">What it means</a>
+      <a href="/" data-i18n="nav.forecast">Forecast</a>
+    </nav>
+    <div class="lang-wrap">
+      <button class="lang-btn" id="langBtn" type="button"
+              data-i18n-attr="title:ui.language|aria-label:ui.language"
+              aria-haspopup="listbox" aria-expanded="false">EN</button>
+      <ul class="lang-menu" id="langMenu" role="listbox"
+          data-i18n-attr="aria-label:ui.language" hidden></ul>
+    </div>
+    <button class="icon-btn" id="theme" title="Switch theme" aria-label="Switch theme"
+            data-i18n-attr="title:ui.theme|aria-label:ui.theme">🌙</button>
+  </header>
+
+  <section class="guide-hero">
+    <span class="hero-badge" data-i18n="guide.badge">📖 Read this first · about 4 minutes</span>
+    <h1 data-i18n="guide.h1">Every number on this site, explained in plain English</h1>
+    <p data-i18n="guide.intro">Weather sites throw words at you — “surface pressure”, “CAPE”, “aerosol optical depth” — and never say what they mean. This page does. Each feature gets a plain label, a short note on what it tells you, and an honest badge for how much to trust it. The first 25 come from the original feature notes and keep their exact wording. Two more were added afterwards and sit in their own group at the end, so the original list stays intact. Read it once, then head to the forecast.</p>
+    <a class="guide-cta" href="/" data-i18n="guide.cta">Open the forecast →</a>
+    <a class="guide-cta ghost" href="#group-1" style="margin-left:8px" data-i18n="guide.jump">Jump to the list</a>
+
+    <div class="jump" aria-label="On this page">
+      <a href="#group-1" data-i18n="guide.jumpList">The 25 features</a>
+      <a href="#group-3" data-i18n="guide.jumpAdded">Added later</a>
+      <a href="#how-it-works" data-i18n="guide.jumpHow">How it works</a>
+      <a href="#honest" data-i18n="guide.jumpHonest">What we will not fake</a>
+      <a href="#questions" data-i18n="guide.jumpQs">Questions</a>
+      <a href="#about" data-i18n="about.jump">About</a>
+    </div>
+
+    <div class="guide-stats" style="margin-top:20px">
+      <div><b>27</b><span data-i18n="guide.stat.features">features explained</span></div>
+      <div><b>25</b><span data-i18n="guide.stat.original">from the original notes</span></div>
+      <div><b>2</b><span data-i18n="guide.stat.added">added later, kept apart</span></div>
+      <div><b>₹0</b><span data-i18n="guide.stat.free">free &amp; open data</span></div>
+    </div>
+  </section>
+
+  <div class="filter-row" id="filters" role="group" aria-label="Filter features">
+    <button class="filter-chip" data-filter="all" aria-pressed="true" data-i18n="guide.filter.all">All 27</button>
+    <button class="filter-chip" data-filter="live" aria-pressed="false" data-i18n="guide.filter.live">✅ Live data</button>
+    <button class="filter-chip" data-filter="estimated" aria-pressed="false" data-i18n="guide.filter.estimated">⚠️ Estimated</button>
+    <button class="filter-chip" data-filter="conditional" aria-pressed="false" data-i18n="guide.filter.conditional">🌊 Only near the sea</button>
+    <button class="filter-chip" data-filter="global" aria-pressed="false" data-i18n="guide.filter.global">🌍 Global, not local</button>
+    <button class="filter-chip" data-filter="background" aria-pressed="false" data-i18n="guide.filter.background">🗺️ Background info</button>
+    <span class="filter-count" id="filterCount"></span>
+  </div>
+
+  <!-- FEATURES:START -->
+  <section class="group-block" id="group-1">
+    <div class="group-head">
+      <h2 data-i18n="guide.g1.title">Features you can show now</h2>
+      <span class="cnt" data-i18n="guide.g.features" data-i18n-args="20">20 features</span>
+      <p data-i18n="guide.g1.intro">These come straight from the forecast models and update every few hours. Open the forecast and they are all on screen.</p>
+    </div>
+    <div class="feat-grid">
+      <article class="feat-card" id="f-precipitation" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🌧️</span>
+          <div>
+            <div class="fname" data-i18n="feat.precipitation.name">Rain and snow</div>
+            <div class="ftech" data-i18n="feat.precipitation.tech">Precipitation</div>
+          </div>
+        </header>
+        <p class="fnote">How much rain, snow or hail is expected, and how likely it is. One millimetre is one litre of water on every square metre of ground, so 10 mm is a good soaking.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#rain" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-surface_pressure" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🌡️</span>
+          <div>
+            <div class="fname" data-i18n="feat.surface_pressure.name">Air pressure</div>
+            <div class="ftech" data-i18n="feat.surface_pressure.tech">Surface pressure</div>
+          </div>
+        </header>
+        <p class="fnote">The weight of the air pressing down on the ground. Normal is around 1013 hPa; falling pressure usually means a storm is coming, and rising pressure means settled weather.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#hero" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-surface_temperature" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🌡️</span>
+          <div>
+            <div class="fname" data-i18n="feat.surface_temperature.name">Temperature</div>
+            <div class="ftech" data-i18n="feat.surface_temperature.tech">Surface temperature</div>
+          </div>
+        </header>
+        <p class="fnote">How warm the air is at ground level — what you feel when you step outside. In strong sunshine the ground itself can be much hotter than this number.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#hero" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-surface_water_vapour" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">💧</span>
+          <div>
+            <div class="fname" data-i18n="feat.surface_water_vapour.name">Humidity</div>
+            <div class="ftech" data-i18n="feat.surface_water_vapour.tech">Surface water vapour</div>
+          </div>
+        </header>
+        <p class="fnote">How much invisible water the air is holding. High humidity feels sticky; when the dew point gets close to the air temperature, fog or rain is likely.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#moisture" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-surface_wind" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">💨</span>
+          <div>
+            <div class="fname" data-i18n="feat.surface_wind.name">Wind</div>
+            <div class="ftech" data-i18n="feat.surface_wind.tech">Surface wind speed and direction</div>
+          </div>
+        </header>
+        <p class="fnote">How fast the air is moving and where it comes from. &quot;20 km/h from the west&quot; means it blows from the west towards the east, and stronger wind makes a cold day feel colder.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#wind" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-upper_air_temperature" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🎈</span>
+          <div>
+            <div class="fname" data-i18n="feat.upper_air_temperature.name">Temperature higher up</div>
+            <div class="ftech" data-i18n="feat.upper_air_temperature.tech">Upper-air temperature</div>
+          </div>
+        </header>
+        <p class="fnote">The temperature of the air about 1,500 m above you. Cold air up there makes the atmosphere unstable, which is when showers and thunderstorms build.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#sky" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-clouds" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">☁️</span>
+          <div>
+            <div class="fname" data-i18n="feat.clouds.name">Cloud cover</div>
+            <div class="ftech" data-i18n="feat.clouds.tech">Clouds</div>
+          </div>
+        </header>
+        <p class="fnote">How much of the sky is covered, and whether the cloud is low, middle or high. Low grey cloud usually means a dull day; high thin cloud often means a change is on the way.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#sky" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-aerosols" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🌫️</span>
+          <div>
+            <div class="fname" data-i18n="feat.aerosols.name">Haze and dust</div>
+            <div class="ftech" data-i18n="feat.aerosols.tech">Aerosols</div>
+          </div>
+        </header>
+        <p class="fnote">Tiny particles floating in the air — dust, smoke, sea salt, soot. More of them means a hazier sky and worse air for anyone with breathing problems.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#air" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-ozone" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🫧</span>
+          <div>
+            <div class="fname" data-i18n="feat.ozone.name">Ground-level ozone</div>
+            <div class="ftech" data-i18n="feat.ozone.tech">Ozone</div>
+          </div>
+        </header>
+        <p class="fnote">A gas that irritates the lungs and builds up on hot, still, sunny days, when city smog is worst. High in the sky, ozone does the opposite job and protects us from the sun.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#air" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-precursors" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🏭</span>
+          <div>
+            <div class="fname" data-i18n="feat.precursors.name">Pollution gases</div>
+            <div class="ftech" data-i18n="feat.precursors.tech">Precursors for aerosols and ozone</div>
+          </div>
+        </header>
+        <p class="fnote">The gases from traffic, heating and industry that turn into smog in sunlight. High numbers mean the air is likely to get worse as the day goes on.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#air" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-lightning" data-status="estimated">
+        <header>
+          <span class="fem" aria-hidden="true">⛈️</span>
+          <div>
+            <div class="fname" data-i18n="feat.lightning.name">Storm risk</div>
+            <div class="ftech" data-i18n="feat.lightning.tech">Lightning</div>
+          </div>
+        </header>
+        <p class="fnote">How favourable the air is for thunderstorms. It is a risk indicator, not a count of strikes: high values mean thunder is possible, not that lightning is hitting your street.</p>
+        
+        <div class="ffoot">
+          <span class="pill estimated" data-i18n="guide.pill.estimated">Estimated</span>
+          <a class="jump" href="/#storm" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-upper_air_water_vapour" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🌫️</span>
+          <div>
+            <div class="fname" data-i18n="feat.upper_air_water_vapour.name">Moisture high up</div>
+            <div class="ftech" data-i18n="feat.upper_air_water_vapour.tech">Upper-air water vapour</div>
+          </div>
+        </header>
+        <p class="fnote">Water vapour higher in the atmosphere. It is the fuel for clouds and heavy rain — plenty of it, plus rising air, gives downpours.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#sky" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-upper_air_wind" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🌀</span>
+          <div>
+            <div class="fname" data-i18n="feat.upper_air_wind.name">Wind high up</div>
+            <div class="ftech" data-i18n="feat.upper_air_wind.tech">Upper-air wind speed and direction</div>
+          </div>
+        </header>
+        <p class="fnote">Wind well above the ground, including the fast jet-stream winds around 10 km up. These steer weather systems, so they tell you which way a storm is heading.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#wind" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-evaporation" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">♨️</span>
+          <div>
+            <div class="fname" data-i18n="feat.evaporation.name">Evaporation</div>
+            <div class="ftech" data-i18n="feat.evaporation.tech">Evaporation from land</div>
+          </div>
+        </header>
+        <p class="fnote">Water leaving the soil and plants as vapour. High evaporation dries out the ground and cools the surface, which is why a well-watered garden stays cooler in a heatwave.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#moisture" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-soil_moisture" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🪴</span>
+          <div>
+            <div class="fname" data-i18n="feat.soil_moisture.name">How wet the soil is</div>
+            <div class="ftech" data-i18n="feat.soil_moisture.tech">Soil moisture</div>
+          </div>
+        </header>
+        <p class="fnote">Water held in the top layer of ground. Dry soil means rain runs off instead of soaking in, and heatwaves get worse because there is no water left to evaporate.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#ground" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-snow" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">❄️</span>
+          <div>
+            <div class="fname" data-i18n="feat.snow.name">Snow on the ground</div>
+            <div class="ftech" data-i18n="feat.snow.tech">Snow</div>
+          </div>
+        </header>
+        <p class="fnote">How much snow is falling and how deep it lies. About 1 cm of snow holds 1 mm of water, so 10 cm of snow is a useful soaking when it melts.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#rain" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-land_surface_temperature" data-status="live">
+        <header>
+          <span class="fem" aria-hidden="true">🔥</span>
+          <div>
+            <div class="fname" data-i18n="feat.land_surface_temperature.name">Ground temperature</div>
+            <div class="ftech" data-i18n="feat.land_surface_temperature.tech">Land surface temperature</div>
+          </div>
+        </header>
+        <p class="fnote">How hot the ground itself is — tarmac, sand, soil, a roof. In sunshine it can be 20–30 °C hotter than the air, which is why cities feel so oppressive during heatwaves.</p>
+        
+        <div class="ffoot">
+          <span class="pill live" data-i18n="guide.pill.live">Live data</span>
+          <a class="jump" href="/#ground" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-sea_state" data-status="conditional">
+        <header>
+          <span class="fem" aria-hidden="true">🌊</span>
+          <div>
+            <div class="fname" data-i18n="feat.sea_state.name">Waves</div>
+            <div class="ftech" data-i18n="feat.sea_state.tech">Sea state</div>
+          </div>
+        </header>
+        <p class="fnote">How high the waves are, how far apart, and from which direction. Around 1 m is choppy but fine for most boats; 3 m and more is dangerous for small craft.</p>
+        
+        <div class="ffoot">
+          <span class="pill conditional" data-i18n="guide.pill.conditional">Needs the sea</span>
+          <a class="jump" href="/#sea" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-surface_currents" data-status="conditional">
+        <header>
+          <span class="fem" aria-hidden="true">🧭</span>
+          <div>
+            <div class="fname" data-i18n="feat.surface_currents.name">Sea currents</div>
+            <div class="ftech" data-i18n="feat.surface_currents.tech">Surface currents</div>
+          </div>
+        </header>
+        <p class="fnote">How fast and in which direction the top of the sea is flowing. It matters for swimmers and sailors, and for anything drifting, including pollution.</p>
+        
+        <div class="ffoot">
+          <span class="pill conditional" data-i18n="guide.pill.conditional">Needs the sea</span>
+          <a class="jump" href="/#sea" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-sea_surface_temperature" data-status="conditional">
+        <header>
+          <span class="fem" aria-hidden="true">🏖️</span>
+          <div>
+            <div class="fname" data-i18n="feat.sea_surface_temperature.name">Sea temperature</div>
+            <div class="ftech" data-i18n="feat.sea_surface_temperature.tech">Sea surface temperature</div>
+          </div>
+        </header>
+        <p class="fnote">How warm the top of the sea is. It decides how comfortable swimming is, and a warm sea feeds tropical storms and damages coral reefs.</p>
+        
+        <div class="ffoot">
+          <span class="pill conditional" data-i18n="guide.pill.conditional">Needs the sea</span>
+          <a class="jump" href="/#sea" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="group-block" id="group-2">
+    <div class="group-head">
+      <h2 data-i18n="guide.g2.title">Features to add carefully</h2>
+      <span class="cnt" data-i18n="guide.g.features" data-i18n-args="5">5 features</span>
+      <p data-i18n="guide.g2.intro">These can be shown, but each one needs a caveat next to it, so read the note before you rely on the number.</p>
+    </div>
+    <div class="feat-grid">
+      <article class="feat-card" id="f-radiation_budget" data-status="estimated">
+        <header>
+          <span class="fem" aria-hidden="true">☀️</span>
+          <div>
+            <div class="fname" data-i18n="feat.radiation_budget.name">Sun energy at the ground</div>
+            <div class="ftech" data-i18n="feat.radiation_budget.tech">Surface radiation budget</div>
+          </div>
+        </header>
+        <p class="fnote">How much energy the ground gets from the sun, minus the heat it gives back. It is estimated from sunshine, temperature and humidity rather than measured, so show it as a guide, not a precise reading.</p>
+        
+        <div class="ffoot">
+          <span class="pill estimated" data-i18n="guide.pill.estimated">Estimated</span>
+          <a class="jump" href="/#ground" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-greenhouse_gases" data-status="global">
+        <header>
+          <span class="fem" aria-hidden="true">🌍</span>
+          <div>
+            <div class="fname" data-i18n="feat.greenhouse_gases.name">Heat-trapping gases</div>
+            <div class="ftech" data-i18n="feat.greenhouse_gases.tech">Carbon dioxide, methane and other greenhouse gases</div>
+          </div>
+        </header>
+        <p class="fnote">The gases that keep the planet warm. The figure shown is the global background level, the same for every place on Earth, so it tells you about the climate rather than today&#x27;s weather where you are.</p>
+        <p class="fsource">Shown here: the locally modelled CO₂ concentration above your point. It rises near cities — London reads far higher than Reykjavik — so this is a local modelled value, not the single global background figure.</p>
+        <div class="ffoot">
+          <span class="pill global" data-i18n="guide.pill.global">Global, not local</span>
+          <a class="jump" href="/#environment" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-fire" data-status="estimated">
+        <header>
+          <span class="fem" aria-hidden="true">🔥</span>
+          <div>
+            <div class="fname" data-i18n="feat.fire.name">Fire risk</div>
+            <div class="ftech" data-i18n="feat.fire.tech">Fire</div>
+          </div>
+        </header>
+        <p class="fnote">How easily a fire could start and spread, based on heat, dryness and wind. It is a danger rating, not a map of where fires are currently burning.</p>
+        
+        <div class="ffoot">
+          <span class="pill estimated" data-i18n="guide.pill.estimated">Estimated</span>
+          <a class="jump" href="/#environment" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-land_cover" data-status="background">
+        <header>
+          <span class="fem" aria-hidden="true">🗺️</span>
+          <div>
+            <div class="fname" data-i18n="feat.land_cover.name">What&#x27;s on the ground</div>
+            <div class="ftech" data-i18n="feat.land_cover.tech">Land cover</div>
+          </div>
+        </header>
+        <p class="fnote">A map of what covers the land: forest, fields, towns, water, bare rock. It changes over years, so treat it as background information rather than a live reading.</p>
+        <p class="fsource">Here it is read from OpenStreetMap: the mapped land-use mix within about 1.5 km of your point.</p>
+        <div class="ffoot">
+          <span class="pill background" data-i18n="guide.pill.background">Background info</span>
+          <a class="jump" href="/#environment" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-sea_level" data-status="conditional">
+        <header>
+          <span class="fem" aria-hidden="true">🌊</span>
+          <div>
+            <div class="fname" data-i18n="feat.sea_level.name">Tide height</div>
+            <div class="ftech" data-i18n="feat.sea_level.tech">Sea level</div>
+          </div>
+        </header>
+        <p class="fnote">The height of the sea at the coast, including the tide. This is not the same as sea-level rise: tides go up and down twice a day, while sea-level rise is a slow change over decades.</p>
+        
+        <div class="ffoot">
+          <span class="pill conditional" data-i18n="guide.pill.conditional">Needs the sea</span>
+          <a class="jump" href="/#sea" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="group-block" id="group-3">
+    <div class="group-head">
+      <h2 data-i18n="guide.g3.title">Added after the original notes</h2>
+      <span class="cnt" data-i18n="guide.g.features" data-i18n-args="2">2 features</span>
+      <p data-i18n="guide.g3.intro">Added after the original list, so they sit apart from the 25 rather than being folded into them. Both carry a caveat worth reading.</p>
+    </div>
+    <div class="feat-grid">
+      <article class="feat-card" id="f-pollen" data-status="conditional">
+        <header>
+          <span class="fem" aria-hidden="true">🌾</span>
+          <div>
+            <div class="fname" data-i18n="feat.pollen.name">Pollen</div>
+            <div class="ftech" data-i18n="feat.pollen.tech">Pollen concentration</div>
+          </div>
+        </header>
+        <p class="fnote">How much pollen is expected in the air, split into trees, grass and weeds, with a level from low to very high. The numbers are grains per cubic metre, and each type is judged on its own scale because birch and grass are counted differently.</p>
+        <p class="fsource">Regional, not worldwide: the model covers Europe and returns nothing for most of Asia, Africa, the Americas and Oceania. It is also modelled rather than measured, on a grid of roughly 40 km. Where there is no coverage the site says so instead of showing a zero.</p>
+        <div class="ffoot">
+          <span class="pill conditional" data-i18n="guide.pill.conditional">Needs the sea</span>
+          <a class="jump" href="/#pollen" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+      <article class="feat-card" id="f-lifestyle" data-status="estimated">
+        <header>
+          <span class="fem" aria-hidden="true">🧭</span>
+          <div>
+            <div class="fname" data-i18n="feat.lifestyle.name">Daily life suggestions</div>
+            <div class="ftech" data-i18n="feat.lifestyle.tech">Lifestyle guidance</div>
+          </div>
+        </header>
+        <p class="fnote">Plain-language suggestions built from the pollen level and the weather — whether outdoor plans are likely to be comfortable, when counts tend to peak, and small changes that people commonly report helping.</p>
+        <p class="fsource">General guidance only. It is not medical advice, it does not diagnose anything, and it never states an outcome as certain. Anyone whose health is affected by pollen should follow their own clinician rather than this page.</p>
+        <div class="ffoot">
+          <span class="pill estimated" data-i18n="guide.pill.estimated">Estimated</span>
+          <a class="jump" href="/#pollen" data-i18n="guide.seeLive">See it live →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- FEATURES:END -->
+
+
+  <section class="band" id="how-it-works">
+    <div class="eyebrow" data-i18n="guide.how.eyebrow">The plumbing</div>
+    <h2 data-i18n="guide.how.title">Where these numbers actually come from</h2>
+    <p data-i18n="guide.how.intro">Nothing here is typed in by hand, and nothing is generated by an AI. Every value on the forecast page is fetched from a public weather API when you open the page, and the page says how old it is.</p>
+    <div class="how">
+      <div>
+        <span class="n">1</span>
+        <h3 data-i18n="guide.how.s1t">You pick a place</h3>
+        <p data-i18n="guide.how.s1p">Search by city name or use your location. The name is turned into coordinates once, and those coordinates are what every request uses.</p>
+      </div>
+      <div>
+        <span class="n">2</span>
+        <h3 data-i18n="guide.how.s2t">The server asks the API</h3>
+        <p data-i18n="guide.how.s2p">A small proxy fetches from Open-Meteo and caches the reply for ten minutes. Caching is what keeps the site inside the free tier — one visitor does not mean one upstream call.</p>
+      </div>
+      <div>
+        <span class="n">3</span>
+        <h3 data-i18n="guide.how.s3t">The page renders it</h3>
+        <p data-i18n="guide.how.s3p">Each card reads its own field. If a field is missing, the card says so instead of showing a zero. There is no invented fallback anywhere on the page.</p>
+      </div>
+    </div>
+    <p style="margin-top:20px" data-i18n="guide.how.outro">The forecast models behind the numbers are the national ones — ECMWF, GFS, ICON and others — blended by Open-Meteo. This site does not run its own model and does not claim to.</p>
+  </section>
+
+  <section class="band" id="honest">
+    <div class="eyebrow" data-i18n="guide.honest.eyebrow">Rules this site follows</div>
+    <h2 data-i18n="guide.honest.title">What we will not fake</h2>
+    <p data-i18n="guide.honest.intro">Most of the trust problems on weather sites come from showing a confident number that was never measured. These are the specific cases, and what happens instead.</p>
+    <div class="trust">
+      <div>
+        <b data-i18n="guide.honest.b1t">🌍 Global values get a global badge</b><span data-i18n="guide.honest.b1p">CO₂ is measured near cities, not at your window. It carries a “not local weather” label rather than being dressed up as a local reading.</span></div>
+      <div>
+        <b data-i18n="guide.honest.b2t">🛰️ Satellite data says satellite</b><span data-i18n="guide.honest.b2p">Ground temperature comes from a model grid, not a thermometer in your street. The card says “estimated” and explains which estimate it is.</span></div>
+      <div>
+        <b data-i18n="guide.honest.b3t">🌊 Sea data disappears inland</b><span data-i18n="guide.honest.b3p">Near the coast you get wave height and sea temperature. Inland, the card is removed entirely instead of showing a blank box that looks broken.</span></div>
+      <div>
+        <b data-i18n="guide.honest.b4t">🌙 Polar day and night are named</b><span data-i18n="guide.honest.b4p">At high latitudes the sun does not always rise. The page says “no sunset — midnight sun” or “polar night” instead of printing 12:00 AM.</span></div>
+      <div>
+        <b data-i18n="guide.honest.b5t">☀️ Sunshine is a whole-day total</b><span data-i18n="guide.honest.b5p">The sunshine figure is a forecast for the entire day, so it does not drop to zero at noon. The label says so.</span></div>
+      <div>
+        <b data-i18n="guide.honest.b6t">💧 Evaporation is a rate, not a total</b><span data-i18n="guide.honest.b6p">Water leaving the soil is quoted in millimetres per hour. Multiplying it by 24 to get a daily figure would be wrong, so we do not.</span></div>
+      <div>
+        <b data-i18n="guide.honest.b7t">📉 Missing means missing</b><span data-i18n="guide.honest.b7p">When a value is unavailable the card shows a dash and a reason. We never substitute a plausible-looking number to keep the layout tidy.</span></div>
+      <div>
+        <b data-i18n="guide.honest.b8t">🏷️ Every number has a badge</b><span data-i18n="guide.honest.b8p">Live, estimated, conditional, global, or background — each of the 25 features is labelled above, so you can tell at a glance how much weight to give it.</span></div>
+    </div>
+  </section>
+
+  <section class="band" id="questions">
+    <div class="eyebrow" data-i18n="guide.q.eyebrow">Before you ask</div>
+    <h2 data-i18n="guide.q.title">Questions people actually ask</h2>
+    <p data-i18n="guide.q.intro">The short answers. Each one is about something a reader has genuinely questioned while using a weather site.</p>
+    <div class="qa">
+      <details>
+        <summary data-i18n="guide.q1s">Why does the site ask me to prove I am not a bot?</summary>
+        <div class="a">
+          <p data-i18n="guide.q1p1">The weather data is free but rate-limited. A single scraper in a loop can use up the day's allowance and break the site for everyone else. The check is a one-time speed bump, it takes about a second, and it happens once per visit rather than once per page.</p>
+          <p data-i18n="guide.q1p2">Be aware of what it is: a deterrent, not a lock. It stops casual scraping and bulk copying. It would not stop someone determined, because everything it does happens in your browser where it can be read. Real protection needs a server-side check such as Cloudflare Turnstile, and this project deliberately stays free and key-less instead.</p>
+          <p data-i18n="guide.q1p3">There is no account, no email, no cookie and no tracking pixel. Everything the check needs stays in your browser.</p>
+        </div>
+      </details>
+      <details>
+        <summary data-i18n="guide.q2s">How accurate is a forecast here?</summary>
+        <div class="a">
+          <p data-i18n="guide.q2p1">The accuracy is the underlying model's, not this site's. This page displays what Open-Meteo returns without adjusting it. In general, a three-day forecast is far more reliable than a seven-day one, and rainfall intensity is the least reliable field of all — the models agree on “rain likely” long before they agree on how much.</p>
+          <p data-i18n="guide.q2p2">A useful rule: trust the shape of the next 24 hours, treat anything past day five as a trend rather than a plan.</p>
+        </div>
+      </details>
+      <details>
+        <summary data-i18n="guide.q3s">Why is the temperature different from my phone's weather app?</summary>
+        <div class="a">
+          <p data-i18n="guide.q3p1">Different models, different grids, different update times. Your phone may be showing a reading from a station near you while this page shows an interpolated value for the grid cell containing your city — which can be several kilometres across.</p>
+          <p data-i18n="guide.q3p2">Urban heat is the other factor. A grid cell that averages a city with its surrounding countryside will read cooler than a thermometer on a hot street.</p>
+        </div>
+      </details>
+      <details>
+        <summary data-i18n="guide.q4s">What is CAPE, and why is the storm score a percentage?</summary>
+        <div class="a">
+          <p data-i18n="guide.q4p1">CAPE measures how much energy a rising parcel of air has available — high values mean the atmosphere is primed for thunderstorms. The raw unit (joules per kilogram) is not intuitive, so the storm card converts it to a 0–100 score and labels the result.</p>
+          <p data-i18n="guide.q4p2">It is an indicator, not a warning service. For official thunderstorm warnings, follow your national meteorological agency.</p>
+        </div>
+      </details>
+      <details>
+        <summary data-i18n="guide.q5s">Does this work offline, or as an app?</summary>
+        <div class="a">
+          <p data-i18n="guide.q5p1">No. Every value is fetched live, so with no connection there is nothing to show and the page tells you so with a retry button. It is a website, not an installed app, and it does not claim to work offline.</p>
+        </div>
+      </details>
+      <details>
+        <summary data-i18n="guide.q6s">Is any of this paid?</summary>
+        <div class="a">
+          <p data-i18n="guide.q6p1">No. The weather, air-quality, marine and geocoding data all come from Open-Meteo's free tier, and the map outlines come from OpenStreetMap volunteers. There is no API key in this project and no billing account behind it.</p>
+          <p data-i18n="guide.q6p2">The trade-off is the free tier's limits: it is intended for non-commercial use, with a rough ceiling of about ten thousand requests a day. If this ever became popular enough to exceed that, the honest options are to pay, to cache harder, or to slow down — not to quietly start scraping someone else.</p>
+        </div>
+      </details>
+      <details>
+        <summary data-i18n="guide.q7s">Why do only 25 features appear when there are more weather variables than that?</summary>
+        <div class="a">
+          <p data-i18n="guide.q7p1">Because the other thirty on the official climate list need satellites or yearly reports rather than a live forecast. Showing them would mean showing something that is not actually being measured, so they are deliberately left out — and the note at the bottom of this page names that decision rather than hiding it.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <h2 data-i18n="about.title">About this project</h2>
+    <div class="about-body">
+      <div class="about-who">
+        <div class="about-avatar" aria-hidden="true">DM</div>
+        <div>
+          <b class="credit-name">Divyansh Maharana</b>
+          <span class="credit-role" data-i18n="credit.role">built and maintains this site</span>
+        </div>
+      </div>
+      <p data-i18n="about.p1">I built this site because most weather pages bury a number you need under three you do not. Every one of the 25 features here is explained in plain language on the guide page, and where a value is estimated or borrowed from somewhere else, the card says so instead of pretending otherwise.</p>
+      <p data-i18n="about.p2">It is one person's work: no framework, no build step, no tracking, no API keys, and no paid translation service. The code is deliberately plain so that it can be read, checked and corrected.</p>
+      <p data-i18n="about.p3">If something here is wrong, the honest fix is to change it — so corrections are genuinely welcome.</p>
+      <ul class="about-facts">
+        <li data-i18n="about.f1">14 languages, each with a full translation of the interface</li>
+        <li data-i18n="about.f2">25 live features, all fetched from free public data sources</li>
+        <li data-i18n="about.f3">No account, no cookie, no advertising, no cost</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="note-strip">
+    <span class="i">ℹ️</span>
+    <div>
+      <b data-i18n="guide.note.b">What is not here.</b> <span data-i18n="guide.note.p">The first 25 notes cover the features a weather site can honestly show. The other 30 variables on the official climate list need satellites or yearly reports, so nothing truthful could be displayed for them — they are left out rather than faked.</span>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <span data-i18n="guide.foot.data">Data:</span> <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> <span data-i18n="guide.foot.credits">(CC-BY 4.0) · Forecast models from national weather services · Map data © OpenStreetMap contributors</span>
+    </div>
+    <div class="credit">
+      <span data-i18n="credit.builtBy">Built by</span>
+      <b class="credit-name">Divyansh Maharana</b><span class="credit-role" data-i18n="credit.role">built and maintains this site</span>
+    </div>
+    <div class="disclaimer">
+      <span data-i18n="guide.foot.built">Built as a single self-contained project: one server, two pages, no build step, no framework, no tracking. The bot check runs entirely in your browser.</span><br><br>
+      <span data-i18n="guide.foot.disclaimer">This is an independent hobby project, not an official meteorological service. For warnings and life-safety decisions, always follow your national weather agency (e.g.</span> <a href="https://mausam.imd.gov.in/" target="_blank" rel="noopener">IMD</a><span data-i18n="guide.foot.or">,</span>
+      <a href="https://www.noaa.gov/" target="_blank" rel="noopener">NOAA</a><span data-i18n="guide.foot.end">).</span>
+    </div>
+  </footer>
+</div>
+
+<button class="to-top" id="toTop" aria-label="Back to top" data-i18n-attr="aria-label:guide.toTop">↑</button>
+
+<script>
+(() => {
+  "use strict";
+  /* localStorage throws in a sandboxed iframe (the preview). Theme choice is a
+     nicety, so read/write it defensively rather than crashing the page. */
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* ignore */ } },
+  };
+  const root = document.documentElement;
+  const saved = store.get("skyline.theme") ||
+                (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  root.dataset.theme = saved;
+  const themeBtn = document.getElementById("theme");
+  const paint = () => { themeBtn.textContent = root.dataset.theme === "dark" ? "☀️" : "🌙"; };
+  paint();
+  themeBtn.addEventListener("click", () => {
+    root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+    store.set("skyline.theme", root.dataset.theme);
+    paint();
+  });
+
+  // ---- filtering ----
+  const cards = [...document.querySelectorAll(".feat-card")];
+  const groups = [...document.querySelectorAll(".group-block")];
+  const countEl = document.getElementById("filterCount");
+  const chips = [...document.querySelectorAll(".filter-chip")];
+
+  function applyFilter(f) {
+    let shown = 0;
+    cards.forEach((c) => {
+      const hit = f === "all" || c.dataset.status === f;
+      c.classList.toggle("dim", !hit);
+      c.hidden = !hit;
+      if (hit) shown++;
+    });
+    groups.forEach((g) => {
+      const any = [...g.querySelectorAll(".feat-card")].some((c) => !c.hidden);
+      g.hidden = !any;
+    });
+    countEl.textContent = window.t
+      ? window.t("guide.showing", "showing {0} of {1}", [shown, cards.length])
+      : `showing ${shown} of ${cards.length}`;
+    /* Keep the query string: dropping it would also drop ?lang=xx before the
+       translation layer has read it, and the page would load in English. */
+    const q = location.search;
+    if (f === "all") history.replaceState(null, "", location.pathname + q);
+    else history.replaceState(null, "", location.pathname + q + "#" + f);
+  }
+
+  chips.forEach((b) => b.addEventListener("click", () => {
+    chips.forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+    applyFilter(b.dataset.filter);
+  }));
+
+  const hash = location.hash.replace("#", "");
+  const valid = chips.map((c) => c.dataset.filter);
+  /* The count is built by JS, so it has to be rebuilt after a language change. */
+  if (window.i18n) {
+    window.i18n.onApply(() => applyFilter(
+      (chips.filter((c) => c.getAttribute("aria-pressed") === "true")[0] || chips[0]).dataset.filter
+    ));
+  }
+
+  if (valid.includes(hash)) {
+    chips.forEach((o) => o.setAttribute("aria-pressed", String(o.dataset.filter === hash)));
+    applyFilter(hash);
+  } else {
+    applyFilter("all");
+  }
+
+  // ---- back to top ----
+  const top = document.getElementById("toTop");
+  addEventListener("scroll", () => top.classList.toggle("on", scrollY > 600), { passive: true });
+  top.addEventListener("click", () => scrollTo({ top: 0, behavior: "smooth" }));
+})();
+</script>
+</body>
+</html>

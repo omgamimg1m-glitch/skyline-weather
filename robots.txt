@@ -1,0 +1,14 @@
+# Skyline — free weather forecast
+# https://skyline-free-weather.netlify.app
+
+User-agent: *
+Allow: /
+
+# Nothing here is private and there is no need to slow crawlers down.
+# Both pages are plain HTML with no login wall, so everything is indexable.
+
+# The forecast page calls these paths; on static hosting they are not real
+# files, so keep crawlers from queueing up 404s.
+Disallow: /api/
+
+Sitemap: https://skyline-free-weather.netlify.app/sitemap.xml
